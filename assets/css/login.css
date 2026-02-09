@@ -1,0 +1,346 @@
+        /* --- ECOSCAN THEME VARIABLES --- */
+        :root {
+            /* Light Gradient Background */
+            --bg-gradient: linear-gradient(180deg, #ffffff 0%, #e0f2fe 0%, #dcfce7 100%);
+            
+            /* Card & Layout */
+            --card-bg: #ffffff;
+            --shadow: 0 20px 40px rgba(0, 166, 118, 0.15); /* Soft green shadow */
+            
+            /* Brand Colors */
+            --primary-color: #00a676; /* EcoScan Green */
+            --primary-hover: #008f65;
+            --secondary-bg: #f0fdf4; /* Very light green */
+            
+            /* Typography */
+            --text-main: #0f172a; /* Dark Navy/Black */
+            --text-muted: #64748b; /* Slate Grey */
+            
+            /* Inputs */
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --input-focus: #00a676;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            background-color: var(--card-bg);
+            width: 1000px;
+            max-width: 95%;
+            height: 650px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        /* Left Section (Branding) */
+        .login-bg{
+            background: linear-gradient(rgba(0, 166, 118, 0.8), rgba(13, 59, 46, 0.8)), url('../img/login-bg.webp');
+        }
+        .signup-bg{
+            background: linear-gradient(rgba(0, 166, 118, 0.8), rgba(13, 59, 46, 0.8)), url('../img/signup-bg.webp');
+        }
+        .left-section {
+            flex: 1;
+            position: relative;
+            /* Updated to a nature/leaf abstract image to match the Eco vibe */
+            /*background: linear-gradient(rgba(0, 166, 118, 0.8), rgba(13, 59, 46, 0.8)), 
+                        url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1913&auto=format&fit=crop');*/
+            background-size: cover;
+            background-position: center;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo i {
+            background: white;
+            color: var(--primary-color);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            text-decoration: none;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .caption-area {
+            text-align: left;
+        }
+
+        .caption-area h2 {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        
+        /* New "Badge" style from EcoScan */
+        .eco-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Right Section (Form) */
+        .right-section {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .form-header a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Inputs */
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            padding: 16px;
+            border-radius: 12px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 15px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus {
+            background-color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 166, 118, 0.1);
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .checkbox-group input {
+            margin-right: 12px;
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Forgot Pass */
+        
+        .forgot-se {
+            display: block;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-align: right;
+            color: var(--text-muted);
+        }
+        
+        .forgot-se a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .forgot-se a:hover{
+            color: var(--primary-hover);
+        }
+
+        /* Buttons */
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 166, 118, 0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            background: var(--card-bg);
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-btn {
+            flex: 1;
+            background-color: white;
+            border: 1px solid var(--input-border);
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            background-color: var(--input-bg);
+            border-color: #cbd5e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .left-section {
+                height: 250px;
+                padding: 30px;
+            }
+            .right-section {
+                padding: 30px;
+            }
+        }
+        
