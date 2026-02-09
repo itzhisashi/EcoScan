@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJppw9S0jT9wDjbzjpS5d2AJcaNu4TAT4wrWmLSH68bLg6y20fihcn6zhri095scAj2Q/exec";
   if (!GOOGLE_SCRIPT_URL) {
     return res.status(500).json({ message: "Missing Google Script URL" });
   }
