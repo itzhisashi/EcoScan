@@ -1,4 +1,4 @@
-const API_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL";
+const API_URL = "https://script.google.com/macros/s/AKfycbzN7fRDD8UYY0sCtyn774gBo5kEgmGHKoGVomYwxQlhBymVeSORZB12FAjhiGzkxPlyOA/exec";
 
 const msg = document.getElementById("msg");
 const username = document.getElementById("username");
