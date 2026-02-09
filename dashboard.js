@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzN7fRDD8UYY0sCtyn774gBo5kEgmGHKoGVomYwxQlhBymVeSORZB12FAjhiGzkxPlyOA/exec";
+const API_URL = "/api/auth";
 
 async function getIP() {
   const res = await fetch("https://api.ipify.org?format=json");
