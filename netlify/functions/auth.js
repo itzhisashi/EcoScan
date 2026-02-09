@@ -103,7 +103,7 @@ async function login() {
   if (data.status === "success") {
     localStorage.setItem("token", data.token);
     localStorage.setItem("ip", ip);
-    location.href = "dashboard.html";
+    location.href = "index.html";// dashboard.html
   } else {
     setMessage(data.message || "Unable to log in.");
   }
