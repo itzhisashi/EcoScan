@@ -1,15 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EcoScan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/login.css">
+</head>
 <body>
 
-<h2>Login</h2>
+    <div class="container">
+        <div class="left-section login-bg">
+            <div class="logo">
+                <i class="fa-solid fa-recycle"></i>
+                EcoScan
+            </div>
+            <a href="index.html" class="back-btn">Back home &rarr;</a>
+            
+            <div class="caption-area">
+                <div class="eco-badge">
+                    <i class="fa-solid fa-circle-check" style="color:#fff; margin-right:5px;"></i> AI-Powered
+                </div>
+                <h2>Turn Waste<br>into Resource</h2>
+            </div>
+        </div>
 
-<input id="identifier" placeholder="Username or Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
+        <div class="right-section">
+            <div class="form-header">
+                <h1>Welcome Back!</h1>
+                <p>Login to access your dashboard and profile.</p>
+            </div>
 
-<button onclick="login()">Login</button>
-<p id="msg"></p>
+                    <div class="input-group">
+                        <input type="text" placeholder="Username & Email" id="identifier" required>
+                    </div>
 
-<script src="netlify/functions/auth.js"></script>
+                <div class="input-group">
+                    <input type="password" placeholder="Password" id="password" required>
+                    <i class="fa-regular fa-eye eye-icon" id="togglePassword"></i>
+                </div>
+
+                <button onclick="login()" class="submit-btn">
+                    <i class="fa-solid fa-leaf" style="margin-right:8px;"></i> Start Scanning
+                </button>
+                <p id="msg"></p>
+            
+            <div class="forgot-se">
+                <span><a class="color: var(--primary-color); font-weight: 600; text-decoration: none;" href="forgot.html">Forgot Password?</a></span>
+            </div>
+            
+            <div class="divider" style="text-align: center; margin-top: 25px; font-size: 14px; color: var(--text-muted);">
+                <span>Don't have an Account? <a href="signup.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign Up</a></span>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/login.js"></script>
+    <script src="netlify/functions/auth.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+  
