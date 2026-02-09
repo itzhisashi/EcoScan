@@ -14,13 +14,16 @@ async function getIP() {
   const ip = await getIP();
 
   fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "validate",
-      token: token,
-      ip: ip
-    })
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    action: "validate",
+    token: token,
+    ip: ip
   })
+})
   .then(r => r.json())
   .then(d => {
     if (d.status !== "success") {
