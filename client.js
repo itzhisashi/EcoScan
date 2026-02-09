@@ -1,5 +1,4 @@
-// Change 1: Point to your Vercel function (relative path)
-const API_URL = "/api/auth"; 
+const API_URL = "/api/auth";
 
 const msg = document.getElementById("msg");
 const username = document.getElementById("username");
@@ -9,63 +8,36 @@ const confirm = document.getElementById("confirm");
 const identifier = document.getElementById("identifier");
 
 function setMessage(text) {
-  if (msg) {
-    msg.innerText = text;
-  }
-}
-
-async function safeJson(res) {
-  const text = await res.text();
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    return { status: "error", message: "Invalid server response", detail: text };
-  }
+  if (msg) msg.innerText = text;
 }
 
 async function requestAuth(payload) {
-  // Change 2: Use standard JSON headers for Vercel
-  const response = await fetch(API_URL, {
+  const res = await fetch(API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json" 
-    },
-    body: JSON.stringify(payload)
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
-
-  return safeJson(response);
+  return res.json();
 }
 
 async function getIP() {
   try {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    return data.ip;
-  } catch (error) {
+    const r = await fetch("https://api.ipify.org?format=json");
+    return (await r.json()).ip;
+  } catch {
     return "unknown";
   }
 }
 
-function validateSignup() {
-  if (!username || !email || !password || !confirm) {
-    return "Signup form is missing fields.";
-  }
-
-  if (!username.value.trim() || !email.value.trim() || !password.value.trim()) {
-    return "Please fill out all required fields.";
+/* SIGNUP */
+async function signup() {
+  if (!username.value || !email.value || !password.value || !confirm.value) {
+    setMessage("All fields required");
+    return;
   }
 
   if (password.value !== confirm.value) {
-    return "Passwords do not match";
-  }
-
-  return "";
-}
-
-async function signup() {
-  const error = validateSignup();
-  if (error) {
-    setMessage(error);
+    setMessage("Passwords do not match");
     return;
   }
 
@@ -75,20 +47,16 @@ async function signup() {
     action: "signup",
     username: username.value.trim(),
     email: email.value.trim(),
-    password: password.value
+    password: password.value,
   });
 
-  setMessage(data.message || "Signup complete.");
+  setMessage(data.message);
 }
 
+/* LOGIN */
 async function login() {
-  if (!identifier || !password) {
-    setMessage("Login form is missing fields.");
-    return;
-  }
-
-  if (!identifier.value.trim() || !password.value.trim()) {
-    setMessage("Please enter your username/email and password.");
+  if (!identifier.value || !password.value) {
+    setMessage("Missing credentials");
     return;
   }
 
@@ -99,15 +67,15 @@ async function login() {
     action: "login",
     identifier: identifier.value.trim(),
     password: password.value,
-    ip
+    ip,
   });
 
   if (data.status === "success") {
     localStorage.setItem("token", data.token);
     localStorage.setItem("ip", ip);
-    location.href = "index.html"; // dashboard.html
+    location.href = "index.html";
   } else {
-    setMessage(data.message || "Unable to log in.");
+    setMessage(data.message);
   }
 }
 
