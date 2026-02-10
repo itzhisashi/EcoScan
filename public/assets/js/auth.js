@@ -1,77 +1,113 @@
-import { supabase } from "./supabase.js";
+const API_URL = "https://script.google.com/macros/s/AKfycbzN7fRDD8UYY0sCtyn774gBo5kEgmGHKoGVomYwxQlhBymVeSORZB12FAjhiGzkxPlyOA/exec";
 
 const msg = document.getElementById("msg");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const confirm = document.getElementById("confirm");
+const identifier = document.getElementById("identifier");
 
-function setMessage(text, ok = false) {
-  if (!msg) return;
-  msg.innerText = text;
-  msg.style.color = ok ? "green" : "red";
+function setMessage(text) {
+  if (msg) {
+    msg.innerText = text;
+  }
 }
 
-/* ---------- SIGNUP ---------- */
-window.signup = async function () {
-  const username = document.getElementById("username").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const confirm = document.getElementById("confirm").value;
-
-  if (!username || !email || !password) {
-    setMessage("Fill all fields");
-    return;
+async function safeJson(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    return { status: "error", message: "Invalid server response", detail: text };
   }
+}
 
-  if (password !== confirm) {
-    setMessage("Passwords do not match");
-    return;
-  }
-
-  setMessage("Creating account...", true);
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
+async function requestAuth(payload) {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
   });
 
+  return safeJson(response);
+}
+
+async function getIP() {
+  try {
+    const res = await fetch("https://api.ipify.org?format=json");
+    const data = await res.json();
+    return data.ip;
+  } catch (error) {
+    return "unknown";
+  }
+}
+
+function validateSignup() {
+  if (!username || !email || !password || !confirm) {
+    return "Signup form is missing fields.";
+  }
+
+  if (!username.value.trim() || !email.value.trim() || !password.value.trim()) {
+    return "Please fill out all required fields.";
+  }
+
+  if (password.value !== confirm.value) {
+    return "Passwords do not match";
+  }
+
+  return "";
+}
+
+async function signup() {
+  const error = validateSignup();
   if (error) {
-    setMessage(error.message);
+    setMessage(error);
     return;
   }
 
-  await supabase.from("profiles").insert({
-    id: data.user.id,
-    username
+  setMessage("Creating account...");
+
+  const data = await requestAuth({
+    action: "signup",
+    username: username.value.trim(),
+    email: email.value.trim(),
+    password: password.value
   });
 
-  setMessage("Account created! You can login now.", true);
-};
+  setMessage(data.message || "Signup complete.");
+}
 
-/* ---------- LOGIN ---------- */
-window.login = async function () {
-  const identifier = document.getElementById("identifier").value.trim();
-  const password = document.getElementById("password").value;
-
+async function login() {
   if (!identifier || !password) {
-    setMessage("Missing login details");
+    setMessage("Login form is missing fields.");
     return;
   }
 
-  setMessage("Signing in...", true);
+  if (!identifier.value.trim() || !password.value.trim()) {
+    setMessage("Please enter your username/email and password.");
+    return;
+  }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: identifier,
-    password
+  setMessage("Signing in...");
+  const ip = await getIP();
+
+  const data = await requestAuth({
+    action: "login",
+    identifier: identifier.value.trim(),
+    password: password.value,
+    ip
   });
 
-  if (error) {
-    setMessage(error.message);
-    return;
+  if (data.status === "success") {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("ip", ip);
+    location.href = "index.html";// dashboard.html
+  } else {
+    setMessage(data.message || "Unable to log in.");
   }
+}
 
-  location.href = "index.html";
-};
-
-/* ---------- LOGOUT ---------- */
-window.logout = async function () {
-  await supabase.auth.signOut();
-  location.href = "login.html";
-};
+window.signup = signup;
+window.login = login;
