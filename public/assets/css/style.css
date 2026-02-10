@@ -54,3 +54,21 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        #map { 
+            height: 500px; 
+            width: 100%; 
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #10b981;
+        }
+
+        /* Custom Legend Styling */
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            line-height: 24px;
+        }
+        .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.8; }

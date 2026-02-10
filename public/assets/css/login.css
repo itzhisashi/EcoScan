@@ -178,10 +178,9 @@
             width: 100%;
         }
 
-        /* input,input[type="text"],
+        input[type="text"],
         input[type="email"],
-        input[type="password"] */
-        input {
+        input[type="password"] {
             width: 100%;
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
@@ -344,4 +343,15 @@
                 padding: 30px;
             }
         }
-        
+
+.error-message {
+  margin-top: 0px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e53935; /* red */
+  background: rgba(229, 57, 53, 0.08);
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: none;
+}
