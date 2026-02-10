@@ -1,79 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - EcoScan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/login.css">
-</head>
+<html>
 <body>
 
-    <!-- <div class="container">
-        <div class="left-section signup-bg">
-            <div class="logo">
-                <i class="fa-solid fa-recycle"></i>
-                EcoScan
-            </div>
-                <a href="index.html" class="back-btn">Back home &rarr;</a>
-            
-                <div class="caption-area">
-                    <div class="eco-badge">
-                        <i class="fa-solid fa-circle-check" style="color:#fff; margin-right:5px;"></i> AI-Powered
-                    </div>
-                    <h2>Turn Waste<br>into Resource</h2>
-                </div>
-            </div>
+<h2>Signup</h2>
 
-            <div class="right-section">
-                <div class="form-header">
-                    <h1>Create Account</h1>
-                    <p>Join the revolution for a cleaner planet.</p>
-                </div>
+<input id="username" placeholder="Username"><br>
+<input id="email" placeholder="Email"><br>
+<input id="password" type="password" placeholder="Password"><br>
+<input id="confirm" type="password" placeholder="Confirm Password"><br>
 
-                <div class="input-group">
-                    <input type="text" placeholder="Username" id="username" maxlength="8" required>
-                </div>
-                    
-                <div class="input-group">
-                    <input type="email" placeholder="Email Address" id="email" required>
-                </div>
+<button onclick="signup()">Create Account</button>
+<p id="msg"></p>
 
-                <div class="input-group">
-                    <input type="password" placeholder="Write Password" id="password" required>
-                    <i class="fa-regular fa-eye eye-icon" id="togglePassword"></i>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" placeholder="Confirm Password" id="confirm" required>
-                    <i class="fa-regular fa-eye eye-icon" id="toggleConfirm"></i>
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">I agree to the <a href="terms.html">Terms</a> & <a href="privacy-policy.html">Privacy Policy</a></label>
-                </div>
-
-                <button onclick="signup()" class="submit-btn">
-                    <i class="fa-solid fa-leaf" style="margin-right:8px;"></i> Create Account
-                </button>
-                <p id=msg></p>
-            
-            <br>
-            <div  class="divider" style="text-align: center; margin-top: 25px; font-size: 14px; color: var(--text-muted);">
-                <span>Already have an account? <a href="login.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Log in</a></span>
-            </div>
-        </div>
-    </div> -->
-
-
-
-
-
-
-    
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/login.js"></script>
+<script src="assets/js/auth.js"></script>
 </body>
 </html>
