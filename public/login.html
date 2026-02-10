@@ -9,12 +9,62 @@
     <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body>
-<input id="identifier" placeholder="Username or Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
+    <div class="container">
+        <div class="left-section login-bg">
+            <div class="logo">
+                <i class="fa-solid fa-recycle"></i>
+                EcoScan
+            </div>
+            <a href="index.html" class="back-btn">Back home &rarr;</a>
+            
+            <div class="caption-area">
+                <div class="eco-badge">
+                    <i class="fa-solid fa-circle-check" style="color:#fff; margin-right:5px;"></i> AI-Powered
+                </div>
+                <h2>Turn Waste<br>into Resource</h2>
+            </div>
+        </div>
 
-<button onclick="login()">Login</button>
+        <div class="right-section">
+            <div class="form-header">
+                <h1>Welcome Back!</h1>
+                <p>Login to access your dashboard and profile.</p>
+            </div>
+            <div class="input-group">
+                        
+<input id="identifier" placeholder="Username or Email">
+            </div>
+             <div class="input-group">
+                   <input id="password" type="password" placeholder="Password">
+                    <i class="fa-regular fa-eye eye-icon" id="togglePassword"></i>
+             </div>
+            
+
+
+<button onclick="login()" class="submit-btn">Login</button>
 <p id="msg"></p>
+            <div class="forgot-se">
+                <span><a class="color: var(--primary-color); font-weight: 600; text-decoration: none;" href="forgot.html">Forgot Password?</a></span>
+            </div>
+            
+            <div class="divider" style="text-align: center; margin-top: 25px; font-size: 14px; color: var(--text-muted);">
+                <span>Don't have an Account? <a href="signup.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign Up</a></span>
+            </div>
+        </div>
+    </div>
+<script>
+    // JavaScript for Password Visibility Toggle
+        // password
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
 
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+</script>
 <script src="assets/js/auth.js"></script>
 </body>
 </html>
