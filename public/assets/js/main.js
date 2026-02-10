@@ -233,3 +233,4 @@ function simulateScan() {
 
         // Initial Render
         renderMap();
+
