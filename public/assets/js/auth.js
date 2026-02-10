@@ -1,29 +1,60 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzJppw9S0jT9wDjbzjpS5d2AJcaNu4TAT4wrWmLSH68bLg6y20fihcn6zhri095scAj2Q/exec";
+/* CONFIG */
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzN7fRDD8UYY0sCtyn774gBo5kEgmGHKoGVomYwxQlhBymVeSORZB12FAjhiGzkxPlyOA/exec";
 
-const msg = document.getElementById("msg");
-const username = document.getElementById("username");
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const confirm = document.getElementById("confirm");
-const identifier = document.getElementById("identifier");
+/* HELPERS */
+function el(id) {
+  return document.getElementById(id);
+}
 
-function setMessage(text) {
-  if (msg) {
-    msg.innerText = text;
+/* message types: error | success | info */
+function setMessage(text, type = "error") {
+  const msg = el("msg");
+  if (!msg) return;
+
+  msg.textContent = text;
+  msg.style.display = "block";
+  msg.style.padding = "10px 14px";
+  msg.style.borderRadius = "8px";
+  msg.style.fontSize = "14px";
+
+  // reset
+  msg.style.color = "";
+  msg.style.background = "";
+
+  if (type === "success") {
+    msg.style.color = "#2e7d32";
+    msg.style.background = "rgba(46, 125, 50, 0.12)";
+  } else if (type === "info") {
+    msg.style.color = "#1b5e20";
+    msg.style.background = "rgba(76, 175, 80, 0.18)";
+  } else {
+    // error
+    msg.style.color = "#c62828";
+    msg.style.background = "rgba(198, 40, 40, 0.12)";
   }
+}
+
+function hideMessage() {
+  const msg = el("msg");
+  if (msg) msg.style.display = "none";
 }
 
 async function safeJson(res) {
   const text = await res.text();
   try {
     return JSON.parse(text);
-  } catch (error) {
-    return { status: "error", message: "Invalid server response", detail: text };
+  } catch {
+    return {
+      status: "error",
+      message: "Invalid server response",
+      raw: text
+    };
   }
 }
 
 async function requestAuth(payload) {
-  const response = await fetch(API_URL, {
+  const res = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
@@ -31,43 +62,59 @@ async function requestAuth(payload) {
     body: JSON.stringify(payload)
   });
 
-  return safeJson(response);
+  return safeJson(res);
 }
 
 async function getIP() {
   try {
     const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    return data.ip;
-  } catch (error) {
+    return (await res.json()).ip;
+  } catch {
     return "unknown";
   }
 }
 
+/* SIGNUP */
 function validateSignup() {
+  const username = el("username");
+  const email = el("email");
+  const password = el("password");
+  const confirm = el("confirm");
+
   if (!username || !email || !password || !confirm) {
-    return "Signup form is missing fields.";
+    return "Signup form fields missing.";
   }
 
-  if (!username.value.trim() || !email.value.trim() || !password.value.trim()) {
-    return "Please fill out all required fields.";
+  if (
+    !username.value.trim() ||
+    !email.value.trim() ||
+    !password.value.trim()
+  ) {
+    return "Please fill all required fields.";
   }
 
   if (password.value !== confirm.value) {
-    return "Passwords do not match";
+    return "Passwords do not match.";
   }
 
   return "";
 }
 
 async function signup() {
+  hideMessage();
+
   const error = validateSignup();
   if (error) {
-    setMessage(error);
+    setMessage(error, "error");
     return;
   }
 
-  setMessage("Creating account...");
+  const username = el("username");
+  const email = el("email");
+  const password = el("password");
+
+  // ✅ GREEN INFO MESSAGE
+  setMessage("Creating account...", "info");
 
   const data = await requestAuth({
     action: "signup",
@@ -76,21 +123,33 @@ async function signup() {
     password: password.value
   });
 
-  setMessage(data.message || "Signup complete.");
+  if (data.status === "success") {
+    // ✅ GREEN SUCCESS MESSAGE
+    setMessage("Signup successful. You can log in now.", "success");
+  } else {
+    setMessage(data.message || "Signup failed.", "error");
+  }
 }
 
+/* LOGIN */
 async function login() {
+  hideMessage();
+
+  const identifier = el("identifier");
+  const password = el("password");
+
   if (!identifier || !password) {
-    setMessage("Login form is missing fields.");
+    setMessage("Login form fields missing.", "error");
     return;
   }
 
   if (!identifier.value.trim() || !password.value.trim()) {
-    setMessage("Please enter your username/email and password.");
+    setMessage("Enter username/email and password.", "error");
     return;
   }
 
-  setMessage("Signing in...");
+  setMessage("Signing in...", "info");
+
   const ip = await getIP();
 
   const data = await requestAuth({
@@ -101,13 +160,16 @@ async function login() {
   });
 
   if (data.status === "success") {
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("token", data.token || "");
     localStorage.setItem("ip", ip);
-    location.href = "index.html";// dashboard.html
+    location.href = "dashboard.html";
   } else {
-    setMessage(data.message || "Unable to log in.");
+    setMessage(data.message || "Invalid login credentials.", "error");
   }
 }
 
+/* =========================
+   EXPOSE FUNCTIONS
+========================= */
 window.signup = signup;
 window.login = login;
