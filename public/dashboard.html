@@ -12,17 +12,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="assets/img/favicon.png" rel="icon">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     
     <script>
         tailwind.config = {
@@ -51,10 +45,7 @@
     }
 }
     </script>
-    
-    
-    
-
+   
     <style>
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
@@ -399,26 +390,24 @@
                 
                 
             </div>
-            
 
-            <div id="section-scanner" class="tab-content hidden animate-fadeIn max-w-4xl mx-auto">
+            <div id="section-scanner" class="tab-content hidden animate-fadeIn space-y-8">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-slate-800">AI Waste Identification</h2>
                     <p class="text-slate-500 mt-2">Upload a photo or use your camera to identify materials and value.</p>
                 </div>
+               
+                <!-- AI scanner -->
                 
-             <!-- AI SCANNER -->
                 <div class="max-w-2xl mx-auto">
-               </div>
         
         <div class="bg-white rounded-3xl shadow-lg p-1">
             <div class="upload-box relative group border-2 border-dashed border-green-400 rounded-2xl p-10 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300" onclick="document.getElementById('fileInput').click()">
-               
+                
                <center> <div class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-brand-500 mb-4 group-hover:text-brand-600 group-hover:scale-110 transition-transform duration-300">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             </div></center>
-               
-                <!--<span class="text-5xl mb-4 block group-hover:scale-110 transition-transform duration-300"></span>-->
+                
                 <p class="font-bold text-lg text-slate-700 group-hover:text-green-700 transition-colors">Click to Upload Waste Photo</p>
                 <p class="text-sm text-slate-400 mt-1">Supports JPG, PNG</p>
                 
@@ -484,19 +473,15 @@
             </div>
         </div><!---->
     </div>
-                
                 <!-- End AI scanner -->
-
             </div>
 
-            <div id="section-map" class="tab-content hidden animate-fadeIn h-full flex flex-col">
+            <div id="section-map" class="tab-content hidden animate-fadeIn h-full flex flex-col space-y-8">
                 <div class="flex flex-col md:flex-row gap-4 mb-4">
 
                     <div class="flex gap-2 pb-2 md:pb-0">
 
-                     <button onclick="filterMap('all')" class="filter-btn active">
-  All
-</button>
+                     <button onclick="filterMap('all')" class="filter-btn active"> All </button>
 
 <button onclick="filterMap('ewaste')" class="filter-btn">
   <i data-lucide="cpu" class="w-4 h-4 text-purple-500"></i> E-Waste
@@ -549,7 +534,7 @@
 
             </div>
             
-            <div id="section-report" class="tab-content hidden animate-fadeIn h-full flex flex-col">
+            <div id="section-report" class="tab-content hidden animate-fadeIn h-full flex flex-col space-y-8">
                 
             <!-- Report Waste 📸 -->
             
@@ -671,7 +656,7 @@
                 
            </div>
 
-            <div id="section-rewards" class="tab-content hidden animate-fadeIn">
+            <div id="section-rewards" class="tab-content hidden animate-fadeIn space-y-8">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-8 bg-gradient-to-r from-slate-900 to-slate-800 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
                     <div class="relative z-10">
                         <p class="text-slate-400 font-medium mb-1">Available Balance</p>
@@ -873,10 +858,10 @@
     </main>
 
     <script src="assets/js/main.js"></script>
-    <script src="backend/dashboard.js"></script>
-    <script src="backend/auth.js"></script>
+    <script src="netlify/functions/dashboard.js"></script>
+    <script src="netlify/functions/auth.js"></script>
     <script src="assets/js/dashboard.js"></script>
-    <script src="backend/waste-scanner.js"></script>
+    <script src="netlify/functions/waste-scanner.js"></script>
     <script src="assets/js/chart.js"></script>
     
 </body>
