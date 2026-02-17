@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScan - Tools</title>
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/logo.png" rel="apple-touch-icon">
+    <link rel="stylesheet" href="assets/css/tools.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+    @keyframes marquee-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    .animate-marquee {
+        animation: marquee-scroll 40s linear infinite;
+        /* Ensures the width fits the content exactly */
+        width: max-content; 
+    }
+
+    /* Optional: Pause animation when user hovers over the strip */
+    .group:hover .animate-marquee {
+        animation-play-state: paused;
+    }
+        
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        .no-scroll {
+             overflow: hidden;
+             height: 100vh;
+        }
+        
+        /* Custom animation for smooth entry */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        
+    </style>
+
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                colors: {
+                    // Combined Brand and Emerald colors
+                    brand: {
+                        50: '#f0fdf4',
+                        100: '#dcfce7',
+                        300: '#6ee7b7', 
+                        400: '#34d399', 
+                        500: '#22c55e', 
+                        600: '#16a34a',
+                        700: '#15803d',
+                        900: '#14532d',
+                    },
+                    emerald: { 
+                        500: '#10b981', 
+                        600: '#059669' 
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+
+   <!-- Navigation -->
+ <nav style="z-index:99;" class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-emerald-100 shadow-sm transition-all duration-300">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         <div class="flex justify-between h-20 items-center">
+             <div class="flex items-center space-x-2 cursor-pointer" onclick="scrollToSection('home')">
+                 <div class="bg-emerald-500 p-2 rounded-lg text-white">
+                     <i data-lucide="recycle" class="w-6 h-6"></i>
+                 </div>
+                 <span class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                     EcoScan
+                 </span>
+             </div>
+             
+             <!-- Desktop Menu -->
+             <div class="hidden md:flex space-x-8 items-center">
+                 <button onclick="location.href='home.html';" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Home</button>
+                 <button onclick="location.href='dashboard.html';" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Dashboard</button>
+                 <button onclick="logout()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-emerald-200 transition-all transform hover:-translate-y-0.5">
+                     Logout
+                 </button>
+             </div>
+             
+             <!-- Mobile Menu Button -->
+             <div class="md:hidden flex items-center">
+                 <button id="mobile-menu-btn" class="text-slate-600 hover:text-emerald-600 focus:outline-none">
+                     <i data-lucide="menu" class="w-7 h-7"></i>
+                 </button>
+             </div>
+         </div>
+     </div>
+     
+     <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-emerald-100 absolute w-full animate-fadeIn">
+         <div class="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+             <button onclick="location.href='home.html';" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Home</button>
+             <button onclick="location.href='dashboard.html';" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Dashboard</button>
+             <button onclick="logout()" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Logout</button>
+         </div>
+     </div>
+ </nav>
+
+    <header class="relative bg-white pt-32 pb-20 lg:pt-24 lg:pb-28 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-brand-50 text-brand-700 text-sm font-semibold mb-6 border border-brand-100">
+                🚀 New Tools Added Monthly </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
+                Waste Management <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-emerald-400">Web Tools</span>
+            </h1>
+            <p class="mt-4 text-xl text-slate-600 max-w-2xl mx-auto">
+                Interactive tools that assist in identifying, managing, and reducing waste to support a cleaner and greener India.
+            </p>
+
+<h3 class="text-2xl text-center font-bold text-gray-600 text-xl mt-14 relative group top-8"><i class="fa-solid fa-code text-2xs pr-5"></i>Built With</h3>
+
+
+<div class="w-full bg-white border- border-gray-100 py-10 top-10 overflow-hidden relative group">
+
+    <div class="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+
+    <div class="flex animate-marquee">
+
+        <div class="flex items-center space-x-16 px-8">
+            
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/gemini.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Gemini</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/script.png" class="w-7">
+                <span class="text-xl font-bold text-gray-800">Google Script</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/tailwind.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Tailwind</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/google-sheets.png" class="w-6">
+                <span class="text-xl font-bold text-gray-800">Google Sheets</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/cloudflare.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Cloudflare</span>
+            </div>
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/groq.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Groq</span>
+            </div>
+
+        </div>
+        <div class="flex items-center space-x-16 px-8">
+            
+             <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/gemini.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Gemini</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/script.png" class="w-7">
+                <span class="text-xl font-bold text-gray-800">Google Script</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/tailwind.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Tailwind</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/google-sheets.png" class="w-6">
+                <span class="text-xl font-bold text-gray-800">Google Sheets</span>
+            </div>
+
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/cloudflare.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Cloudflare</span>
+            </div>
+            <div class="flex items-center space-x-3 transition-opacity duration-300 opacity-60 hover:opacity-100">
+                <img alt="googlescript" src="assets/img/groq.png" class="w-8">
+                <span class="text-xl font-bold text-gray-800">Groq</span>
+            </div>
+
+        </div>
+        </div>
+</div>
+
+        </div>
+        
+        <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full overflow-hidden -z-10 opacity-30 pointer-events-none">
+            <div class="absolute top-[20%] left-[20%] w-72 h-72 bg-brand-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+            <div class="absolute top-[20%] right-[20%] w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+        </div>
+    </header>
+
+    <main id="tools" class="bg-slate-50 py-16">
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <h2 class="text-3xl font-bold text-slate-800 mb-8"><i class="fa-solid fa-black fa-tools pr-4"></i>Eco-Waste Management Tools</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            
+            <div onclick="openModal('tool-value-est')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Waste Value Estimator</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Point your camera at any waste item. Our AI instantly analyzes the material composition.
+                </p>
+                <button onclick="openModal('tool-value-est')" class="inline-flex items-center text-sm font-semibold text-orange-600 hover:text-orange-700">
+                    Get Values <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+
+            <div onclick="openModal('tool-carbon')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-globe"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Carbon Footprint Data</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Compress PNG and JPG files without losing quality. Perfect for web performance.
+                </p>
+                <button onclick="openModal('tool-carbon')" class="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                    Get Data <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+
+            <div onclick="location.href='map.html';" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-recycle"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Recycling Center Locator</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Convert Word, Excel, and PowerPoint documents to secure PDF format.
+                </p>
+                <!-- onclick="openModal('tool-locator')" -->
+                <button onclick="location.href='map.html';" class="inline-flex items-center text-sm font-semibold text-green-600 hover:text-green-700 transition-colors">
+                    Find Now <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+
+            <div onclick="openModal('tool-resin-code')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Resin Code Decoder</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Decode plastic resin identification codes (♳–♹) to understand recyclability and environmental impact.
+                </p>
+                <button onclick="openModal('tool-resin-code')" class="inline-flex items-center text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
+                    Get Values <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+
+             <div onclick="openModal('tool-water-saver')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-sky-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Water Saver</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Measure the amount of water saved through conscious daily choices and efficient usage.
+                </p>
+                <button onclick="openModal('tool-water-saver')" class="inline-flex items-center text-sm font-semibold text-sky-600 hover:text-sky-700 transition-colors">
+                    Find Now <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+            
+            <div onclick="openModal('tool-commute-saver')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+    <div class="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+        <i class="fa-solid fa-bicycle"></i>
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Commute Saver</h3>
+    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+        Calculate the carbon emissions saved by choosing walking or biking instead of driving. </p>
+    <button onclick="openModal('tool-commute-saver')" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors">
+        Get Calculate <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+    </button>
+</div>
+
+
+
+<div onclick="openModal('tool-veggie-swap')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 text-xl mb-4 group-hover:scale-110 transition-transform">
+        <i class="fa-solid fa-seedling"></i>
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Veggie Swap</h3>
+    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+        Measure the amount of water saved through conscious daily choices and efficient usage.
+    </p>
+    <button onclick="openModal('tool-veggie-swap')" class="inline-flex items-center text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+        Get Data <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+    </button>
+</div>
+
+<div onclick="openModal('tool-phantom-power')" class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+    <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 text-xl mb-4 group-hover:scale-110 transition-transform">
+        <i class="fa-solid fa-bolt"></i>
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Phantom Power</h3>
+    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+        Measure the amount of water saved through conscious daily choices and efficient usage.
+    </p>
+    <button onclick="openModal('tool-phantom-power')" class="inline-flex items-center text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors">
+        Get Data <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+    </button>
+</div>
+
+        </div>
+    </div>
+
+    <div id="toolModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+                    
+                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-b border-slate-100 flex justify-between items-center">
+                        <button onclick="closeModal()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                        <h3 class="text-base font-semibold leading-6 text-slate-900" id="modal-title">Tool Workspace</h3>
+                    </div>
+                   
+                    <div class="px-4 py-6 sm:px-6" id="modal-body-content">
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tool-value-est-content" class="hidden">
+        <h2 class="text-xl font-bold mb-4 text-orange-600">💰 Waste Value Estimator</h2>
+       
+        <!-- start -->
+        
+        <div class="p-6 space-y-5">
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-green-600"></i> Waste Category
+                </label>
+                <div class="relative">
+                    <select id="wasteType" class="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none transition-all text-gray-700 font-medium cursor-pointer">
+                        <option value="" disabled selected>Select material...</option>
+                        
+                        <optgroup label="Glass (Kaanch)">
+                            <option value="glass_beer">Used Beer Bottles (₹15/kg)</option>
+                            <option value="glass_cullet">Cullet Glass Scrap (₹13/kg)</option>
+                            <option value="glass_trans">Transparent Glass (₹10/kg)</option>
+                            <option value="glass_broken">Broken Glass White (₹6.50/kg)</option>
+                            <option value="glass_bottle">Standard Bottle Scrap (₹4/kg)</option>
+                            <option value="glass_tough">Toughened Glass (₹1/kg)</option>
+                        </optgroup>
+
+                        <optgroup label="Paper (Raddi)">
+                            <option value="paper_news">Newspaper/Raddi (₹14/kg)</option>
+                            <option value="paper_books">Books/Notebooks (₹12/kg)</option>
+                            <option value="paper_card">Cardboard/Gatta (₹8/kg)</option>
+                        </optgroup>
+
+                        <optgroup label="Metals (Dhatu)">
+                            <option value="metal_copper">Copper/Tamba (₹600/kg)</option>
+                            <option value="metal_brass">Brass/Pital (₹420/kg)</option>
+                            <option value="metal_alum">Aluminium (₹130/kg)</option>
+                            <option value="metal_steel">Stainless Steel (₹45/kg)</option>
+                            <option value="metal_iron">Iron/Loha (₹26/kg)</option>
+                        </optgroup>
+
+                        <optgroup label="Plastic">
+                            <option value="plas_pet">PET Bottles (₹18/kg)</option>
+                            <option value="plas_hard">Hard Plastic/Buckets (₹12/kg)</option>
+                            <option value="plas_soft">Soft Plastic/Polythene (₹5/kg)</option>
+                        </optgroup>
+                        
+                        <optgroup label="Electronics">
+                            <option value="ewaste">Mixed E-Waste (₹30/kg)</option>
+                        </optgroup>
+                    </select>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <i data-lucide="scale" class="w-4 h-4 text-blue-600"></i> Weight (kg)
+                </label>
+                <div class="relative">
+                    <input type="number" id="weight" placeholder="e.g. 5.5" min="0" step="0.1" 
+                        class="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium">
+                </div>
+            </div>
+
+            <button onclick="processCalculation()" 
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all flex justify-center items-center gap-2 transform active:scale-95">
+                Calculate Value <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="bg-gray-50 border-t border-gray-100 min-h-[180px]">
+            
+            <div id="emptyState" class="p-8 text-center text-gray-400 flex flex-col items-center justify-center h-full">
+                <i data-lucide="leaf" class="w-12 h-12 mb-2 opacity-20"></i>
+                <span class="text-sm">Enter details to see impact</span>
+            </div>
+
+            <div id="loadingState" class="hidden p-8 text-center">
+                <div class="loader-waste"></div>
+                <p class="text-sm text-gray-500 font-medium mt-3">Analyzing market rates...</p>
+            </div>
+
+            <div id="resultsArea" class="hidden p-6 fade-in-waste">
+                <div class="bg-white p-4 rounded-xl border border-green-100 shadow-sm mb-4 flex items-center justify-between relative overflow-hidden">
+                    <div class="absolute right-0 top-0 h-full w-1 bg-green-500"></div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Estimated Value</p>
+                        <h3 class="text-3xl font-extrabold text-gray-800 mt-1" id="outValue">₹0</h3>
+                    </div>
+                    <div class="bg-green-50 p-3 rounded-full text-green-600">
+                        <i data-lucide="indian-rupee" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-2 mb-1 text-gray-500">
+                            <i data-lucide="cloud-off" class="w-4 h-4"></i>
+                            <span class="text-xs font-semibold">CO₂ Saved</span>
+                        </div>
+                        <p class="text-lg font-bold text-gray-800" id="outCO2">0 kg</p>
+                    </div>
+                    
+                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-2 mb-1 text-gray-500">
+                            <i data-lucide="zap" class="w-4 h-4 text-yellow-500"></i>
+                            <span class="text-xs font-semibold">Energy</span>
+                        </div>
+                        <p class="text-lg font-bold text-gray-800" id="outEnergy">0 kWh</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-center gap-2 text-gray-500 bg-blue-50 py-2 rounded-lg text-sm border border-blue-100">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-blue-500"></i>
+                    <span>Equals charging <strong class="text-gray-800" id="outPhones">0</strong> phones</span>
+                </div>
+            </div>
+
+        </div>
+        <!-- end -->
+    </div>
+
+    <div id="tool-carbon-content" class="hidden">
+        <h2 class="text-xl font-bold mb-4 text-blue-600">👣 Carbon Footprint Data</h2>
+        
+        <!-- start -->
+        
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row gap-4 items-center justify-center">
+    <div class="relative w-full max-w-md">
+        <i data-lucide="map-pin" class="absolute left-3 top-3.5 text-slate-400 w-5 h-5"></i>
+        <select id="citySelect" onchange="fetchCityData()" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none bg-white">
+            <option value="" disabled selected>Select a City</option>
+            <option value="mumbai">Mumbai, Maharashtra</option>
+            <option value="delhi">New Delhi, Delhi</option>
+            <option value="bangalore">Bangalore, Karnataka</option>
+            <option value="chennai">Chennai, Tamil Nadu</option>
+            <option value="kolkata">Kolkata, West Bengal</option>
+            <option value="hyderabad">Hyderabad, Telangana</option>
+            <option value="pune">Pune, Maharashtra</option>
+            <option value="ahmedabad">Ahmedabad, Gujarat</option>
+            <option value="jaipur">Jaipur, Rajasthan</option>
+            <option value="lucknow">Lucknow, Uttar Pradesh</option>
+            <option value="surat">Surat, Gujarat</option>
+            <option value="nagpur">Nagpur, Maharashtra</option>
+            <option value="indore">Indore, Madhya Pradesh</option>
+            <option value="patna">Patna, Bihar</option>
+            <option value="bhopal">Bhopal, Madhya Pradesh</option>
+            <option value="kanpur">Kanpur, Uttar Pradesh</option>
+            <option value="visakhapatnam">Visakhapatnam, Andhra Pradesh</option>
+            <option value="vadodara">Vadodara, Gujarat</option>
+            <option value="nashik">Nashik, Maharashtra</option>
+            <option value="coimbatore">Coimbatore, Tamil Nadu</option>
+            <option value="kochi">Kochi, Kerala</option>
+            <option value="chandigarh">Chandigarh</option>
+            <option value="ludhiana">Ludhiana, Punjab</option>
+            <option value="agra">Agra, Uttar Pradesh</option>
+            <option value="varanasi">Varanasi, Uttar Pradesh</option>
+            <option value="rajkot">Rajkot, Gujarat</option>
+            <option value="thiruvananthapuram">Thiruvananthapuram, Kerala</option>
+            <option value="bhubaneswar">Bhubaneswar, Odisha</option>
+            <option value="jamshedpur">Jamshedpur, Jharkhand</option>
+            <option value="guwahati">Guwahati, Assam</option>
+            <option value="raipur">Raipur, Chhattisgarh</option>
+            <option value="dehradun">Dehradun, Uttarakhand</option>
+            <option value="ranchi">Ranchi, Jharkhand</option>
+            <option value="aurangabad">Aurangabad, Maharashtra</option>
+            <option value="mysore">Mysore, Karnataka</option>
+            <option value="goa">Panaji, Goa</option>
+            <option value="amritsar">Amritsar, Punjab</option>
+            <option value="jodhpur">Jodhpur, Rajasthan</option>
+            <option value="madurai">Madurai, Tamil Nadu</option>
+            <option value="gwalior">Gwalior, Madhya Pradesh</option>
+            
+        </select>
+    </div>
+
+</div>
+
+<div id="loader" class="hidden text-center py-12">
+    <div class="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+    <p class="text-slate-500 animate-pulse">Fetching environmental data...</p>
+</div>
+
+<div id="results" class="hidden animate-fade-up-carbon">
+    
+    <div class="flex items-center gap-4 mb-6">
+        <div class="bg-emerald-100 p-3 rounded-full text-emerald-700">
+            <i data-lucide="building-2" class="w-8 h-8"></i>
+        </div>
+        <div>
+            <h2 id="cityName" class="text-3xl font-bold text-slate-900">City Name</h2>
+            <p class="text-slate-500">Data Source: National Environment Estimation (2024)</p>
+        </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        
+        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="cloud" class="w-24 h-24"></i></div>
+            <p class="text-emerald-400 font-bold uppercase text-sm tracking-wider mb-2">Avg. Carbon Footprint</p>
+            <div class="flex items-end gap-2 mb-4">
+                <span id="footprintValue" class="text-5xl font-extrabold">0.0</span>
+                <span class="text-xl text-slate-400 mb-1">tons / year</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
+                <div id="footprintBar" class="bg-emerald-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+            </div>
+            <p id="footprintDesc" class="text-sm text-slate-400">Loading analysis...</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-slate-500 font-bold uppercase text-sm tracking-wider">Air Quality Index</p>
+                    <h3 id="aqiStatus" class="text-2xl font-bold text-orange-500">Moderate</h3>
+                </div>
+                <div id="aqiBadge" class="bg-orange-100 text-orange-700 px-3 py-1 rounded-lg font-bold">AQI 145</div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600">PM 2.5 (Fine Particles)</span>
+                    <span id="pm25" class="font-bold">45 µg/m³</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600">NO2 (Traffic Emission)</span>
+                    <span id="no2" class="font-bold">22 ppb</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="mt-6 bg-emerald-50 border border-emerald-100 p-6 rounded-2xl">
+        <h4 class="font-bold text-emerald-900 mb-2 flex items-center gap-2">
+            <i data-lucide="sprout" class="w-5 h-5"></i> Local Insight
+        </h4>
+        <p id="localInsight" class="text-emerald-800">
+            Insight text goes here.
+        </p>
+    </div>
+</div>
+   
+        <!-- end -->
+    </div>
+
+    <div id="tool-locator-content" class="hidden">
+       
+        <h2 class="text-xl font-bold mb-4 text-green-600"><i class="fa-solid fa-location text-1xs pr-2"></i> Find Nearest Center</h2>
+   
+    </div>
+
+
+
+    <div id="tool-resin-code-content" class="hidden">
+    <h2 class="text-xl font-bold mb-4 text-red-600">⚠️ Resin Decoder</h2>
+    <p class="text-slate-500 text-sm mb-6">Tap the number inside the recycling triangle on your plastic item:</p>
+
+    <div class="flex flex-col h-full">
+        <div id="resinButtons" class="flex flex-wrap gap-3 justify-center mb-6">
+            <button onclick="showResinInfo(1, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">1</button>
+            <button onclick="showResinInfo(2, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">2</button>
+            <button onclick="showResinInfo(3, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">3</button>
+            <button onclick="showResinInfo(4, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">4</button>
+            <button onclick="showResinInfo(5, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">5</button>
+            <button onclick="showResinInfo(6, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">6</button>
+            <button onclick="showResinInfo(7, this)" class="resin-btn w-12 h-12 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-500 hover:text-white transition shadow-sm">7</button>
+        </div>
+
+        <div id="resinResult" class="hidden bg-slate-50 p-6 rounded-xl border-l-4 border-slate-300 text-center mt-auto">
+            <span id="resinName" class="block font-bold text-lg mb-2 text-slate-800"></span>
+            <span id="resinStatus" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-4"></span>
+            <p id="resinDesc" class="text-sm text-slate-600 leading-relaxed"></p>
+        </div>
+    </div>
+</div>
+
+    <div id="tool-commute-saver-content" class="hidden">
+        <h2 class="text-xl font-bold mb-4 text-teal-600 flex items-center"><i class="w-5 h-5 mr-3" data-lucide="bike"></i>Commute Saver</h2>
+        
+         <p class="text-slate-500 text-sm mb-6">Calculate CO₂ saved by walking or biking instead of driving.</p>
+
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Distance (km)</label>
+                    <input type="number" id="distance" placeholder="e.g. 5.5" class="w-full p-4 bg-teal-50 border border-teal-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition text-lg font-medium text-teal-700">
+                </div>
+
+                <button onclick="calculateSavings()" class="w-full bg-teal-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-teal-600 active:scale-95 transition shadow-lg shadow-teal-200">
+                    Calculate Impact
+                </button>
+
+                <div id="calcResult" class="hidden mt-8 text-center bg-emerald-50 p-6 rounded-xl border border-emerald-100">
+                    <div class="text-5xl font-black text-emerald-500 mb-1" id="savedCo2">0</div>
+                    <div class="text-sm text-slate-500 font-medium mb-3">grams of CO₂ prevented</div>
+                    <div id="treeEquiv" class="inline-block bg-white px-4 py-2 rounded-lg text-sm font-semibold text-emerald-700 shadow-sm">
+                        🌿 Equivalent to...
+                    </div>
+                </div>
+                
+    </div>
+    
+     <div id="tool-water-saver-content" class="hidden">
+        <h2 class="text-xl font-bold mb-4 text-sky-600 flex items-center mr-3"><i class="w-5 h-5 fa-solid fa-droplet"></i> Water Saver</h2>
+        <div class="text-center">
+            
+            <p class="text-slate-500"></p>
+            <div class="p-6 flex-1 flex flex-col">
+    <div class="flex justify-between items-end mb-2">
+        <label class="text-xs font-bold text-slate-400 uppercase">Duration</label>
+        <span class="text-2xl font-bold text-sky-600"><span id="timeVal">10</span> <span class="text-sm text-slate-400">min</span></span>
+    </div>
+    
+    <input type="range" id="showerTime" min="1" max="30" value="10" step="1" oninput="updateShower()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-500 mb-8">
+    
+    <div class="grid grid-cols-2 gap-2 mb-6">
+        <button onclick="setHead('standard')" id="btnStd" class="py-2 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 text-sm font-semibold">Standard</button>
+        <button onclick="setHead('eco')" id="btnEco" class="py-2 rounded-lg border border-slate-200 bg-white text-slate-500 text-sm font-medium hover:bg-slate-50">Eco Head</button>
+    </div>
+    
+    <div class="mt-auto text-center bg-slate-50 rounded-xl p-4">
+        <div class="text-3xl font-black text-slate-700 mb-1" id="litersUsed">0</div>
+        <div class="text-xs text-slate-400 uppercase font-bold tracking-wide mb-2">Liters Used</div>
+        <div id="bathEquiv" class="inline-block bg-white border border-slate-200 text-slate-500 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+            🛁 0 buckets
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+    
+    <div id="tool-veggie-swap-content" class="hidden">
+    <h2 class="text-xl font-bold mb-4 text-emerald-600 flex items-center"><i class="w-5 h-5 fa-solid fa-seedling mr-3"></i> Veggie Swap</h2>
+    <div class="text-center">
+ 
+        <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-sm text-slate-500 mb-6 text-center">Swap a non-veg meal for veg:</p>
+                    
+                    <div class="flex justify-center items-center gap-4 mb-8">
+                        <button onclick="changeMeals(-1)" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-xl transition">-</button>
+                        <div class="text-center">
+                            <span id="mealCount" class="block text-3xl font-black text-emerald-600">1</span>
+                            <span class="text-xs font-bold text-emerald-400 uppercase">Meals</span>
+                        </div>
+                        <button onclick="changeMeals(1)" class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 font-bold text-xl transition">+</button>
+                    </div>
+
+                    <div class="mt-auto grid grid-cols-2 gap-3">
+                        <div class="bg-emerald-50 p-3 rounded-xl text-center border border-emerald-100">
+                            <span id="waterSaved" class="block text-lg font-black text-emerald-700">1.3k</span>
+                            <span class="text-[10px] uppercase font-bold text-emerald-500">L Water Saved</span>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded-xl text-center border border-emerald-100">
+                            <span id="co2Saved" class="block text-lg font-black text-emerald-700">3.2</span>
+                            <span class="text-[10px] uppercase font-bold text-emerald-500">kg CO₂ Saved</span>
+                        </div>
+                    </div>
+                </div>
+        
+    </div>
+</div>
+
+ <div id="tool-phantom-power-content" class="hidden">
+    <h2 class="text-xl font-bold mb-4 text-amber-600 flex items-center"><i class="w-5 h-5 fa-solid fa-bolt mr-3"></i> Phantom Power</h2>
+    
+    
+    <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-4">Appliances left on standby:</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <label class="flex items-center p-3 rounded-xl bg-slate-50 hover:bg-amber-50 cursor-pointer transition border border-transparent hover:border-amber-100">
+                            <input type="checkbox" class="w-5 h-5 text-amber-500 rounded focus:ring-amber-500 border-gray-300 accent-amber-500" onchange="calcPhantom()" value="70">
+                            <span class="ml-3 text-sm font-medium text-slate-600">AC Unit (Standby)</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl bg-slate-50 hover:bg-amber-50 cursor-pointer transition border border-transparent hover:border-amber-100">
+                            <input type="checkbox" class="w-5 h-5 text-amber-500 rounded focus:ring-amber-500 border-gray-300 accent-amber-500" onchange="calcPhantom()" value="48">
+                            <span class="ml-3 text-sm font-medium text-slate-600">Desktop / Monitor</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl bg-slate-50 hover:bg-amber-50 cursor-pointer transition border border-transparent hover:border-amber-100">
+                            <input type="checkbox" class="w-5 h-5 text-amber-500 rounded focus:ring-amber-500 border-gray-300 accent-amber-500" onchange="calcPhantom()" value="25">
+                            <span class="ml-3 text-sm font-medium text-slate-600">TV & Set-top Box</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-end">
+                        <div>
+                            <div class="text-3xl font-black text-slate-700" id="phantomKwh">0</div>
+                            <div class="text-xs text-slate-400 font-bold uppercase">kWh / year</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xl font-bold text-amber-500" id="phantomCost">₹0</div>
+                            <div class="text-xs text-slate-400 font-bold uppercase">Yearly Waste</div>
+                        </div>
+                    </div>
+                </div>
+    
+    
+ </div>
+      
+       
+        <div class="mt-12 bg-gray-900 rounded-2xl p-8 md:p-12 flex flex-col mx-6 md:flex-row items-center justify-between shadow-lg">
+            <div class="mb-6 md:mb-0">
+                <h3 class="text-2xl font-bold text-white mb-2">Need help sorting?</h3>
+                <p class="text-gray-400">Download our mobile app to scan items and get instant disposal instructions.</p>
+            </div>
+            <div class="flex space-x-4">
+               <button class="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center">
+                    <i class="fa-brands fa-apple text-3xl mr-2"></i> App Store
+                </button>
+                <button class="bg-transparent border border-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition flex items-center">
+                    <i class="fa-brands fa-google-play text-2xl mr-2"></i> Google Play
+                </button>
+            </div>
+        </div>
+        
+        
+        
+    </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid md:grid-cols-4 gap-12">
+              <div class="col-span-1 md:col-span-2">
+                  <div class="flex items-center space-x-2 mb-6">
+                      <div class="bg-emerald-500 p-1.5 rounded-lg text-white">
+                          <i data-lucide="recycle" class="w-5 h-5"></i>
+                      </div>
+                      <span class="text-2xl font-bold text-white">EcoScan</span>
+                  </div>
+                  <p class="mb-6 max-w-sm leading-relaxed">
+                      Empowering communities to achieve zero waste through smart technology and accessible recycling solutions.
+                  </p>
+              </div>
+              
+              <div>
+                  <h4 class="text-white font-bold mb-6">Quick Links</h4>
+                  <ul class="space-y-3">
+                      <li><a href="home.html" onclick="scrollToSection('home')" class="hover:text-emerald-400 transition-colors">Home</a></li>
+                      <li><a href="#" onclick="scrollToSection('features')" class="hover:text-emerald-400 transition-colors">Features</a></li>
+                      <li><a href="#" onclick="scrollToSection('scanner')" class="hover:text-emerald-400 transition-colors">Scanner</a></li>
+                      <li><a href="#" onclick="scrollToSection('locations')" class="hover:text-emerald-400 transition-colors">Locations</a></li>
+                  </ul>
+              </div>
+              
+              <div>
+                  <h4 class="text-white font-bold mb-6">Contact</h4>
+                  <ul class="space-y-3">
+                      <li class="flex items-start gap-3">
+                          <i data-lucide="map-pin" class="w-4 h-4 mt-1 text-emerald-500"></i>
+                          <span>123 Green Valley Road,<br />Eco District, CA 90210</span>
+                      </li>
+                      <li class="flex items-center gap-3">
+                          <i data-lucide="mail" class="w-4 h-4 text-emerald-500"></i>
+                          <span>support@ecoscan.com</span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          
+          <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+              <p>&copy; 2026 EcoScan Systems. All rights reserved.</p>
+              <div class="flex space-x-6 mt-4 md:mt-0">
+                  <a href="#" class="hover:text-white">Privacy Policy</a>
+                  <a href="#" class="hover:text-white">Terms of Service</a>
+              </div>
+          </div>
+      </div>
+  </footer>
+  
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    <script src="netlify/functions/dashboard.js"></script>
+    <script src="netlify/functions/auth.js"></script>
+    <script src="assets/js/tools.js"></script>
+</body>
+</html>
