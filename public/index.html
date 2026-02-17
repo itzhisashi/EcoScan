@@ -195,6 +195,11 @@
         </div>
     </section>
 
+
+
+
+
+
      <!-- Features Section -->
     <section id="features" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -233,10 +238,48 @@
             </div>
         </div>
     </section>
+    <section id="features" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900 mb-4">Smarter Cities, Cleaner Streets</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    Solving urban waste mismanagement through community reporting and real-time municipal dashboards.
+                </p>
+            </div>
 
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
+                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="camera" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Snap & Report</h3>
+                    <p class="text-slate-600">Citizens can upload photos of overflowing bins or illegal dumping. The location is automatically tagged.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
+                    <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="trophy" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Earn Eco-Points</h3>
+                    <p class="text-slate-600">Get rewarded for every verified report and correct recycling action. Redeem points for benefits.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
+                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">City Heatmaps</h3>
+                    <p class="text-slate-600">Municipalities get a live dashboard showing waste hotspots to optimize pickup routes.</p>
+                </div>
+            </div>
+            
+            <div id="map" class="mt-16 rounded-2xl overflow-hidden shadow-2xl border border-slate-200"style="z-index:80;">
+                <img src="https://images.unsplash.com/photo-1444653614773-995cb1ef902a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                     alt="City Waste Reporting Map" 
+                     class="w-full h-96 object-cover opacity-90 hover:opacity-100 transition-opacity">
             </div>
         </div>
-    </section>-->
+    </section>
 
     <section id="impact" class="py-24 bg-slate-900 text-white relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
@@ -382,6 +425,9 @@
           </div>
       </div>
   </footer>
+
+
+
         <script>
         // 1. Initialize Map centered on Nagpur
         var map = L.map('map').setView([21.1458, 79.0882], 12);
