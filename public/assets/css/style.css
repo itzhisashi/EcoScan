@@ -72,3 +72,12 @@
             line-height: 24px;
         }
         .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.8; }
+        html {
+        scroll-behavior: smooth;
+        }
+        
+        
+        
+        
+        
+        
