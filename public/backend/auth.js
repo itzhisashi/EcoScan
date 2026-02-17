@@ -1,6 +1,6 @@
 /* CONFIG */
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbzN7fRDD8UYY0sCtyn774gBo5kEgmGHKoGVomYwxQlhBymVeSORZB12FAjhiGzkxPlyOA/exec";
+  "https://script.google.com/macros/s/AKfycbwagXkfnb2xKxOkfU00tRcwD4IvV6Wgx9p6ACqP_KgTStu75z59yH3I8450LiB8QoMp/exec";
 
 /* HELPERS */
 function el(id) {
@@ -162,7 +162,7 @@ async function login() {
   if (data.status === "success") {
     localStorage.setItem("token", data.token || "");
     localStorage.setItem("ip", ip);
-    location.href = "dashboard.html";
+    location.href = "home.html";
   } else {
     setMessage(data.message || "Invalid login credentials.", "error");
   }

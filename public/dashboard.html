@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoScan - Smart Waste Management</title>
+    <title>EcoScan | Smart Dashboard</title>
       <!-- Favicons -->
   <link href="assets/img/logo.png" rel="icon">
   <link href="assets/img/logo.png" rel="apple-touch-icon">
@@ -12,371 +12,872 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="assets/img/favicon.png" rel="icon">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    
+    <script>
+        tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+            colors: {
+                brand: {
+                    50: '#ecfdf5',
+                    100: '#d1fae5',
+                    200: '#a7f3d0',
+                    300: '#6ee7b7',
+                    400: '#34d399',
+                    500: '#10b981', // Emerald
+                    600: '#059669',
+                    700: '#047857',
+                    800: '#065f46',
+                    900: '#064e3b',
+                }
+            },
+            boxShadow: {
+                'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                'glow': '0 0 20px rgba(16, 185, 129, 0.4)'
+            }
+        }
+    }
+}
+    </script>
+    
+    
+    
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Scanner Animation */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: scan 2s infinite linear;
+            display: none;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .u-color-black{background-color: #0f172a;}
+        
+        
+        
+         /* Map container height */
+        #map { height: 500px; width: 100%; z-index: 0; }
+
+        /* Custom Loader */
+        .loader-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #16a34a; /* Green-600 */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Custom Popup Styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .leaflet-popup-content { margin: 0; width: 280px !important; }
+        
+        /* Floating Controls */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .filter-btn {
+  background: #1f2937; /* gray-800 */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  user-select: none;
+}
+
+.filter-btn:hover {
+  background: #f3f4f6;
+  color: black;
+  transform: scale(1.05);
+}
+
+
+.filter-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #374151; /* gray-700 */
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: #f3f4f6; /* gray-100 */
+  transform: scale(1.05);
+}
+
+.filter-btn.active {
+  background: #1f2937; /* gray-800 */
+  color: white;
+  border-color: #1f2937;
+}
+        
+        /* Animation for the loader */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .animate-shimmer {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #f6f7f8 4%, #edeef1 25%, #f6f7f8 36%);
+            background-size: 1000px 100%;
+        }
+        
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800">
+<body class="bg-slate-50 font-sans text-slate-800 flex h-screen overflow-hidden selection:bg-emerald-200">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-emerald-100 shadow-sm transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center space-x-2 cursor-pointer" onclick="scrollToSection('home')">
-                    <div class="bg-emerald-500 p-2 rounded-lg text-white">
-                        <i data-lucide="recycle" class="w-6 h-6"></i>
-                    </div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-                        EcoScan
-                    </span>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8 items-center">
-                    <button onclick="scrollToSection('features')" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Features</button>
-                    <button onclick="scrollToSection('scanner')" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Scanner</button>
-                    <button onclick="scrollToSection('locations')" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Locations</button>
-                    <button onclick="logout()" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Logout</button>
-                    <button onclick="scrollToSection('scanner')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-emerald-200 transition-all transform hover:-translate-y-0.5">
-                        Start Recycling
-                    </button>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-emerald-600 focus:outline-none">
-                        <i data-lucide="menu" class="w-7 h-7"></i>
-                    </button>
-                </div>
-            </div>
+  <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-40">
+    <div class="flex items-center gap-2">
+        <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-1.5 rounded-lg text-white">
+            <i data-lucide="recycle" class="w-5 h-5"></i>
         </div>
+        <span class="font-bold text-lg text-white">EcoScan</span>
+    </div>
+    <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-2">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+</div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-emerald-100 absolute w-full animate-fadeIn">
-            <div class="px-4 pt-2 pb-6 space-y-2 shadow-lg">
-                <button onclick="scrollToSection('home')" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Home</button>
-                <button onclick="scrollToSection('features')" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Features</button>
-                <button onclick="scrollToSection('scanner')" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Scanner</button>
-                <button onclick="scrollToSection('locations')" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Locations</button>
-                <button onclick="logout()" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Logout</button>
+<div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+
+<aside id="main-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white h-full shadow-2xl transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out flex flex-col border-r border-slate-800">
+    
+    <div class="p-6 flex items-center justify-between border-b border-slate-800/50">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-lg text-white shadow-lg shadow-emerald-500/20">
+                <i data-lucide="recycle" class="w-6 h-6"></i>
             </div>
+            <span class="font-bold tracking-wide text-xl bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">EcoScan</span>
         </div>
+        <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-2">
+        <p class="text-xs font-bold text-slate-500 uppercase px-4 mb-2 tracking-wider">Main Menu</p>
+        
+        <button onclick="switchTab('overview')" id="nav-overview" class="nav-btn w-full flex items-center gap-3 px-4 py-3 bg-emerald-600/10 text-emerald-400 border-l-4 border-emerald-500 transition-all">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="font-medium">Overview</span>
+        </button>
+        
+        <button onclick="switchTab('scanner')" id="nav-scanner" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="scan-line" class="w-5 h-5"></i>
+            <span class="font-medium">AI Scanner</span>
+        </button>
+        
+        <button onclick="switchTab('map')" id="nav-map" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="map" class="w-5 h-5"></i>
+            <span class="font-medium">Find Drop-off</span>
+        </button>
+        
+        <button onclick="location.href='tools.html';" id="nav-tools" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="wrench" class="w-5 h-5"></i>
+            <span class="font-medium">Find More Tools</span>
+        </button>
+        
+        <button onclick="switchTab('report')" id="nav-report" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span class="font-medium">Report Waste</span>
+        </button>
+        
+        <button onclick="switchTab('rewards')" id="nav-rewards" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="gift" class="w-5 h-5"></i>
+            <span class="font-medium">Rewards Store</span>
+        </button>
+
+        <p class="text-xs font-bold text-slate-500 uppercase px-4 mt-8 mb-2 tracking-wider">Settings</p>
+        
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent transition-all">
+            <i data-lucide="user-circle" class="w-5 h-5"></i>
+            <span class="font-medium">My Profile</span>
+        </button>
+        
+        <button onclick="logout()" id="nav-logout" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-400 hover:bg-slate-800 border-l-4 border-transparent transition-all">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span class="font-medium">Logout</span>
+        </button>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-50"></div>
-        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-teal-100 rounded-full blur-3xl opacity-50"></div>
+    <div onclick="switchTab('profile')" class="p-4 bg-slate-900 border-t border-slate-800 mt-auto">
+        <div class="bg-slate-800/50 rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-slate-800 transition-colors">
+            <div class="w-10 h-10 rounded-full ring-2 ring-emerald-500/50 bg-emerald-500 text-center flex items-center justify-center font-bold">
+                <span id="avatar">U</span>
+            </div>
+            
+            <div class="overflow-hidden">
+                <span class="text-sm font-bold text-white truncate block" id="uName">Loading...</span>
+                <p class="text-xs text-emerald-400 truncate"><span id="hPoints">0</span> Points</p>
+            </div>
+        </div>
+    </div>
+</aside>
+
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50">
         
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div class="space-y-8 animate-slideUp">
-                <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-200 rounded-full px-4 py-1.5 text-emerald-700 font-medium text-sm">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span>AI-Powered Waste Detection</span>
+        <header class="flex justify-between items-center px-8 py-5 bg-white border-b border-slate-200 shadow-sm z-20">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-500"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800" id="page-title">Dashboard</h1>
+                    <p class="text-slate-500 text-sm hidden sm:block">Welcome back! You're making a difference.</p>
                 </div>
-                
-                <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight">
-                    Turn Waste into <br />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-                        Resource
-                    </span>
-                </h1>
-                
-                <p class="text-lg text-slate-600 max-w-xl leading-relaxed">
-                    Identify recyclable materials instantly with our AI scanner and locate the nearest processing centers in seconds. Join the revolution for a cleaner planet.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button onclick="scrollToSection('scanner')" class="flex items-center justify-center space-x-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all transform hover:-translate-y-1">
-                        <i data-lucide="camera" class="w-5 h-5"></i>
-                        <span>Scan Now</span>
-                    </button>
-                    <button onclick="scrollToSection('locations')" class="flex items-center justify-center space-x-2 bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-bold text-lg hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
-                        <i data-lucide="map-pin" class="w-5 h-5"></i>
-                        <span>Find Centers</span>
-                    </button>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                    <i data-lucide="leaf" class="w-4 h-4 text-emerald-600"></i>
+                    <span class="text-sm font-bold text-emerald-700"><span id="userLevel">Level 0</span> Recycler</span>
+                </div>
+                <!-- start -->
+                <div class="relative group inline-block">
+                <button class="p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-full transition-all relative">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                </button>
+                <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute top-full left-1/2 -translate-x-3/4 mt-2 px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-10">
+    You have 3 new messages
+    <div class="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-800"></div>
+        
+    </div>
+                </div>
+              
+                <!-- end -->
+            </div>
+        </header>
+
+        <div id="content-area" class="flex-1 overflow-y-auto p-4 md:p-8 relative scroll-smooth">
+            
+            <div id="section-overview" class="tab-content animate-fadeIn space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow group">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-slate-500 font-medium text-sm mb-1">Total Balance</p>
+                                <h3 class="text-3xl font-bold text-slate-800" ><span id="aPoints">0 </span> <span class="text-lg text-slate-400 font-normal">pts</span></h3>
+                            </div>
+                            <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                <i data-lucide="wallet" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium" id="levelPer">0%</span>
+                            <span class="text-slate-400 ml-2">Progress to Next Level</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow group">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-slate-500 font-medium text-sm mb-1">CO2 Saved</p>
+                                <h3 class="text-3xl font-bold text-slate-800"><span id="coCarbon">0</span> <span class="text-lg text-slate-400 font-normal"> kg</span></h3>
+                            </div>
+                            <div class="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <i data-lucide="cloud" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-slate-500">Equiv. to planting <span class="font-bold text-slate-800"><span id="treePlanted">0</span> trees</span></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                        <h3 class="text-lg font-bold mb-2">Weekly Challenge</h3>
+                        <p class="text-emerald-100 text-sm mb-4">Recycle 5 plastic bottles to earn a bonus badge.</p>
+                        <div class="w-full bg-black/20 rounded-full h-2 mb-2">
+                            <div class="bg-emerald-300 h-2 rounded-full shadow-[0_0_10px_rgba(110,231,183,0.5)]" style="width: 40%"></div>
+                        </div>
+                        <p class="text-xs text-emerald-200 text-right">2/5 Completed</p>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-6 pt-4 text-sm font-medium text-slate-500">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
-                        <span>Instant Analysis</span>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-slate-800">Waste Analytics</h3>
+                            <select class="text-sm border-none bg-slate-50 text-slate-500 rounded-lg p-2 focus:ring-0 cursor-pointer">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                            </select>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="overviewChart"></canvas>
+                        </div>
+
+
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
-                        <span>GPS Tracking</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
-                        <span>Eco Rewards</span>
-                    </div>
+                    
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="font-bold text-gray-700 mb-4">Waste Analytics</h3>
+                <div class="relative h-64 w-full">
+                    <canvas id="wasteChart"></canvas>
+                    
                 </div>
             </div>
             
-            <div class="relative lg:h-[600px] flex items-center justify-center">
-                <!-- Abstract scanning visual -->
-                <div class="relative w-full max-w-md aspect-square">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-3xl opacity-10 rotate-3 transform"></div>
-                    <div class="absolute inset-0 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
-                        <div class="h-12 bg-slate-50 border-b border-slate-100 flex items-center px-4 space-x-2">
-                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-forest-600 col-span-2">
+                <h2 class="text-gray-500 uppercase text-xs font-bold tracking-wider">Total Monthly Waste</h2>
+                <div class="flex items-end gap-2 mt-2">
+                    <span class="text-5xl font-bold text-gray-800" id="total-waste">0</span>
+                    <span class="text-xl text-gray-500 mb-1">MT</span>
+                </div>
+                <p class="text-sm text-gray-400 mt-2">Combined total of Biodegradable, Recyclables, Hazardous E-waste and Inert.</p>
+            </div>
+                
+                
+            </div>
+            
+
+            <div id="section-scanner" class="tab-content hidden animate-fadeIn max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800">AI Waste Identification</h2>
+                    <p class="text-slate-500 mt-2">Upload a photo or use your camera to identify materials and value.</p>
+                </div>
+                
+             <!-- AI SCANNER -->
+                <div class="max-w-2xl mx-auto">
+               </div>
+        
+        <div class="bg-white rounded-3xl shadow-lg p-1">
+            <div class="upload-box relative group border-2 border-dashed border-green-400 rounded-2xl p-10 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300" onclick="document.getElementById('fileInput').click()">
+               
+               <center> <div class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-brand-500 mb-4 group-hover:text-brand-600 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div></center>
+               
+                <!--<span class="text-5xl mb-4 block group-hover:scale-110 transition-transform duration-300"></span>-->
+                <p class="font-bold text-lg text-slate-700 group-hover:text-green-700 transition-colors">Click to Upload Waste Photo</p>
+                <p class="text-sm text-slate-400 mt-1">Supports JPG, PNG</p>
+                
+                <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="previewImage(event)">
+                <img id="preview" class="mt-6 mx-auto max-h-64 rounded-lg shadow-md hidden object-cover" />
+            </div>
+        </div>
+
+        <button id="scanBtn" onclick="scanWaste()" disabled 
+            class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-lg py-4 px-6 rounded-2xl mt-6 shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-600 hover:-translate-y-1 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none">
+            Analyze & Find Centers
+        </button>
+
+        <div id="loading" class="hidden mt-8 text-center">
+            <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-green-600 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                AI is analyzing waste & matching centers...
+            </div>
+        </div>
+
+        <div id="result" class="hidden mt-10 animate-fade-in-up">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+                
+                <div class="bg-green-50/50 p-6 border-b border-green-100">
+                    <h2 id="wasteType" class="text-3xl font-bold text-green-900 capitalize mb-1">Plastic</h2>
+                    <p class="text-sm text-green-700 font-medium flex items-center gap-2">
+                        <span class="flex items-center"><i class="h-4 w-4 mr-2" data-lucide="hand-coins"></i>Est. Value:</span>
+                        <span id="value" class="bg-green-200 text-green-800 px-2 py-0.5 rounded text-xs uppercase tracking-wide font-bold">-</span>
+                    </p>
+                </div>
+                
+                <div class="p-6 space-y-8">
+                    
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between font-bold text-sm text-slate-600 mb-2">
+                            <span>Recyclability Score</span>
+                            <span id="scoreText" class="text-green-600">0%</span>
                         </div>
-                        <div class="flex-1 bg-slate-50 p-6 flex flex-col items-center justify-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center opacity-80"></div>
-                            <div class="absolute inset-0 bg-black/20"></div>
-                            
-                            <!-- Scanning Frame -->
-                            <div class="relative z-10 w-64 h-64 border-2 border-white/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.8)] animate-scan"></div>
-                                <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-lg border border-emerald-100 shadow-lg transform transition-all animate-bounce-slight">
-                                    <div class="flex items-center gap-3">
-                                        <div class="bg-emerald-100 p-2 rounded-full text-emerald-600">
-                                            <i data-lucide="leaf" class="w-4 h-4"></i>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="scoreBar" class="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out w-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-4 border-l-4 border-orange-400 bg-orange-50 rounded-r-xl p-5">
+                        <h3 class="font-bold text-orange-800 mb-3 text-lg flex items-center"><i class="w-4 h-4 mr-3" data-lucide="notebook-pen"></i> Preparation Steps:</h3>
+                        <ul id="steps" class="space-y-2 text-orange-900/80 list-disc list-inside">
+                            </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="flex items-center text-xl font-bold text-slate-800 mb-4">
+                            <i data-lucide="map-pin" class="h-5 w-5 mr-3"></i>Nearby Centers 
+                            <span id="centerCount" class="ml-3 bg-slate-800 text-white text-xs px-2 py-1 rounded-full">0</span>
+                        </h3>
+                        
+                        <ul id="centersList" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div><!---->
+    </div>
+                
+                <!-- End AI scanner -->
+
+            </div>
+
+            <div id="section-map" class="tab-content hidden animate-fadeIn h-full flex flex-col">
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+
+                    <div class="flex gap-2 pb-2 md:pb-0">
+
+                     <button onclick="filterMap('all')" class="filter-btn active">
+  All
+</button>
+
+<button onclick="filterMap('ewaste')" class="filter-btn">
+  <i data-lucide="cpu" class="w-4 h-4 text-purple-500"></i> E-Waste
+</button>
+
+<button onclick="filterMap('plastic')" class="filter-btn">
+  <i data-lucide="milk" class="w-4 h-4 text-blue-500"></i> Plastic
+</button>
+
+<button onclick="filterMap('metal')" class="filter-btn">
+  <i data-lucide="wrench" class="w-4 h-4 text-orange-500"></i> Metal
+</button>
+
+<button onclick="filterMap('paper')" class="filter-btn">
+  <i data-lucide="file-text" class="w-4 h-4 text-green-500"></i> Paper
+</button>  
+                        
+                    </div>
+                </div>
+                
+                <!-- loader -->
+                
+                 <div id="pageLoader" class="loader-overlay">
+     <div class="spinner mb-4"></div>
+     <h2 class="text-xl font-bold text-gray-800">Locating Recyclers...</h2>
+     <p class="text-gray-500 text-sm">Loading map data</p>
+ </div>
+                
+                <!-- end loader -->
+
+                <div class="grid lg:grid-cols-3 gap-6 h-[500px]">
+                    <div class="lg:col-span-2 bg-slate-200 rounded-2xl overflow-hidden shadow-inner relative z-0">
+                        <div id="map" class="w-full h-full z-0"></div>
+                    </div>
+
+                   
+                </div>
+                
+                <!-- Map data -->
+               
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col mt-8">
+                <div class="p-4 border-b border-slate-100 bg-slate-50">
+                <h3 class="font-bold text-slate-800">Nearby Centers</h3>
+                <p id="list-count" class="text-xs text-slate-500">0 locations found</p>
+                </div>
+    
+                <div id="nearby-list" class="overflow-y-auto flex-1 p-2 space-y-2 h-[400px]">
+                </div>
+                </div>
+
+            </div>
+            
+            <div id="section-report" class="tab-content hidden animate-fadeIn h-full flex flex-col">
+                
+            <!-- Report Waste 📸 -->
+            
+             <div class="w-full max-w-3xl mx-auto space-y-8 animate-fade-in-up">
+
+        <div class="bg-white rounded-[2rem] shadow-soft border border-slate-100 overflow-hidden relative">
+            <div class="p-8 pb-0">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="bg-brand-100 text-brand-600 w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm"><i data-lucide="image" class="w-5 h-5 text-black-900"></i></span>
+                    Upload a picture and help clean up our planet.
+                </h3>
+            </div>
+            
+      <!-- form -->
+          <form id="reportForm" class="p-8 space-y-6">
+                
+                <div class="group relative transition-all duration-300">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Live Evidence</label>
+                    <div class="relative w-full h-40 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-400 transition-all duration-300 ease-in-out overflow-hidden">
+            
+                        <input type="file" id="wasteImg" accept="image/*" capture="environment" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 transition-transform duration-300 group-hover:scale-105">
+                            <div class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-brand-500 mb-3 group-hover:text-brand-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <p class="text-slate-700 font-semibold">Tap to capture</p>
+                            <p class="text-xs text-slate-400 mt-1">Supports JPG, PNG (Max 5MB)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Location Data</label>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-4">
+                        <button type="button" onclick="getLocation()" class="w-full flex items-center justify-center gap-2 bg-white text-slate-700 hover:text-brand-600 hover:border-brand-300 border border-slate-200 py-3 rounded-xl font-semibold shadow-sm transition-all duration-200 active:scale-[0.98]">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Detect My Coordinates
+                        </button>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">LAT</span>
+                                <input type="text" id="lat" placeholder="00.0000" readonly class="w-full bg-white border border-slate-200 text-slate-600 rounded-xl pl-10 pr-4 py-2.5 text-sm font-mono focus:outline-none cursor-default">
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">LNG</span>
+                                <input type="text" id="lng" placeholder="00.0000" readonly class="w-full bg-white border border-slate-200 text-slate-600 rounded-xl pl-10 pr-4 py-2.5 text-sm font-mono focus:outline-none cursor-default">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="relative group">
+                        <input type="text" id="address" placeholder=" " required class="peer w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all pt-5">
+                        <label class="absolute left-4 top-1 text-xs font-semibold text-slate-400 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-600">Street / Area Name</label>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="relative">
+                            <input type="text" id="city" placeholder=" " required class="peer w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all pt-5">
+                            <label class="absolute left-4 top-1 text-xs font-semibold text-slate-400 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-600">City</label>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="pincode" placeholder=" " maxlength="6" required class="peer w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all pt-5">
+                            <label class="absolute left-4 top-1 text-xs font-semibold text-slate-400 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-slate-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-600">Pincode</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Category</label>
+                        <div class="relative">
+                            <select id="wasteType" class="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-3 pr-10 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-slate-700 font-medium transition-shadow cursor-pointer hover:border-brand-300">
+                                <option value="Plastic">Plastic</option>
+                                <option value="Organic">Organic / Food</option>
+                                <option value="E-Waste">E-Waste</option>
+                                <option value="Metal">Metal</option>
+                                <option value="Construction">Construction Debris</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Notes</label>
+                        <textarea id="desc" rows="1" placeholder="Describe amount, specific issues..." class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none resize-none text-slate-700 transition-all"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <div id="loader" class="hidden text-center text-sm text-brand-600 mb-3 font-semibold flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        Uploading evidence...
+                    </div>
+                    <button type="submit" id="submitBtn" class="group relative w-full bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-500/40 overflow-hidden transform transition-all hover:scale-[1.01] active:scale-[0.98] duration-200">
+                        <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                        <div class="flex items-center justify-center gap-3 relative z-10">
+                            <span>Submit Report</span>
+                            <span class="bg-white/20 px-2.5 py-0.5 rounded-md text-xs font-mono tracking-wide">+10 PTS</span>
+                        </div>
+                    </button>
+                </div>
+            </form>
+            </div>
+
+        <div class="text-center text-slate-400 text-xs pb-4 font-medium">
+            Secure • Encrypted • Eco-Friendly<br>
+            Eco-Scan Initiative &copy; 2026
+        </div>
+
+    </div>
+           
+            <!-- End Report -->
+                
+           </div>
+
+            <div id="section-rewards" class="tab-content hidden animate-fadeIn">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-8 bg-gradient-to-r from-slate-900 to-slate-800 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <p class="text-slate-400 font-medium mb-1">Available Balance</p>
+                        <h2 class="text-5xl font-bold mb-4" ><span id="pPoints">0</span> <span class="text-2xl text-emerald-400">pts</span></h2>
+                        <p class="text-sm text-slate-300 max-w-md">Redeem your hard-earned points for eco-friendly products, discounts, or donations.</p>
+                    </div>
+                    <button class="mt-4 md:mt-0 relative z-10 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold transition-colors shadow-lg shadow-emerald-500/30">
+                        History
+                    </button>
+                    <div class="absolute right-0 bottom-0 w-64 h-64 bg-emerald-500 rounded-full blur-[80px] opacity-20 translate-y-1/2 translate-x-1/4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all group">
+                        <div class="h-40 bg-orange-100 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold text-slate-800">10% OFF</div>
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-bold text-slate-800 mb-1">Local Grocery Coupon</h4>
+                            <p class="text-xs text-slate-500 mb-4">Get discount on organic produce.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-600 font-bold">500 pts</span>
+                                <button class="px-4 py-2 bg-slate-900 text-white text-xs rounded-lg hover:bg-emerald-600 transition-colors">Redeem</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all group">
+                        <div class="h-40 bg-green-100 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-bold text-slate-800 mb-1">Plant a Tree</h4>
+                            <p class="text-xs text-slate-500 mb-4">We donate to global reforestation.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-600 font-bold">1,000 pts</span>
+                                <button class="px-4 py-2 bg-slate-900 text-white text-xs rounded-lg hover:bg-emerald-600 transition-colors">Donate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-profile" class="tab-content hidden animate-fadeIn max-w-4xl mx-auto">
+                
+                <!-- start -->
+                
+                <div class="lg:col-span-1 animate-fadeIn" style="animation-delay: 0.1s;">
+                <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+                    
+                    <div class="h-32 bg-gradient-to-r from-emerald-500 to-teal-500 relative">
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">
+                                Pro Member
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="px-6 pb-8 text-center -mt-16 relative">
+                        <div class="relative inline-block">
+                            <!-- strat -->
+                       <div class="w-32 h-32 rounded-full border-4 text-white border-white text-center text-6xl u-color-black py-8" alt="User"><span id="Pavatar">U</span></div>
+                            <!-- end -->
+                            <div class="absolute bottom-2 right-2 bg-emerald-500 text-white p-1.5 rounded-full border-2 border-white cursor-pointer hover:bg-emerald-600 transition-colors">
+                                <i data-lucide="camera" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+               <h2 class="text-2xl font-bold text-slate-900 mt-4"><span id="pName">Loading...</span></h2>
+                        
+                    <!-- start -->
+                     <div class="grid md:grid-cols-1 gap-8 text-left mt-10">
+                            <div class="col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 mb-4 text-lg text-left">Personal Details</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                 <!-- start -->
+
+                                 <!-- end --><div class="space-y-1">
+                                            <label class="text-xs font-bold text-slate-500 text-left">Email : <span class="text-left" id="uEmail">Please Wait...</span></label>
                                         </div>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Detected</p>
-                                            <p class="font-bold text-slate-800">Plastic Bottle (PET)</p>
+                                <br>        <div class="space-y-2">
+                                            <label class="text-xs font-bold text-slate-500 text-left"><span id="uIp">detecting...</span></label>
+                                       </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="font-bold text-slate-800 mb-4 text-lg">Badges Collection</h3>
+                                    <div class="flex gap-4 overflow-x-auto pb-4 pt-4">
+                                        <div class="flex flex-col items-center gap-2 min-w-[100px]">
+                                            <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-600 ring-4 ring-gray-100" id="badge-bg">
+                                                <i data-lucide="medal" class="w-8 h-8 text-slate-600" id="badge-color"></i>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-600"><span style="" id="uBadge">Bronze</span></span>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-2 min-w-[100px]">
+                                            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 ring-4 ring-emerald-50">
+                                                <i data-lucide="tree-pine" class="w-8 h-8"></i>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-600">Carbon Killer</span>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-2 min-w-[100px] opacity-50 grayscale">
+                                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-300">
+                                                <i data-lucide="crown" class="w-8 h-8"></i>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-400">Recycle King</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">How It Works</h2>
-                <p class="text-slate-600 text-lg">
-                    We combine advanced computer vision with geolocation services to make recycling effortless and accurate.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-blue-50 text-blue-600 group-hover:scale-110 transition-transform">
-                        <i data-lucide="camera" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Scan Waste</h3>
-                    <p class="text-slate-600 leading-relaxed">Point your camera at any waste item. Our AI instantly analyzes the material composition.</p>
-                </div>
-                <!-- Feature 2 -->
-                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-emerald-50 text-emerald-600 group-hover:scale-110 transition-transform">
-                        <i data-lucide="search" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Get Classification</h3>
-                    <p class="text-slate-600 leading-relaxed">Receive immediate feedback on whether the item is recyclable, compostable, or trash.</p>
-                </div>
-                <!-- Feature 3 -->
-                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-purple-50 text-purple-600 group-hover:scale-110 transition-transform">
-                        <i data-lucide="map-pin" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Find Drop-off</h3>
-                    <p class="text-slate-600 leading-relaxed">Get turn-by-turn directions to the nearest recycling facility that accepts your specific item.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scanner Section -->
-    <section id="scanner" class="py-20 bg-emerald-900 text-white relative overflow-hidden">
-        <!-- Background patterns -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
-            <div class="absolute w-96 h-96 bg-white rounded-full -top-20 -left-20 blur-3xl"></div>
-            <div class="absolute w-96 h-96 bg-emerald-400 rounded-full bottom-0 right-0 blur-3xl"></div>
-        </div>
-
-        <div class="max-w-6xl mx-auto px-4 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">AI Smart Scanner</h2>
-                    <p class="text-emerald-100 text-lg mb-8 leading-relaxed">
-                        Not sure which bin it goes in? Upload a photo of your waste, and our sophisticated AI model will identify the material and tell you exactly how to dispose of it responsibly.
-                    </p>
-                    
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-center gap-3 text-emerald-50">
-                            <div class="bg-emerald-700 p-1 rounded-full"><i data-lucide="check-circle" class="w-3 h-3"></i></div>
-                            Supports Plastics, Glass, Metal, and Paper
-                        </li>
-                        <li class="flex items-center gap-3 text-emerald-50">
-                            <div class="bg-emerald-700 p-1 rounded-full"><i data-lucide="check-circle" class="w-3 h-3"></i></div>
-                            Identifies Hazardous E-Waste
-                        </li>
-                        <li class="flex items-center gap-3 text-emerald-50">
-                            <div class="bg-emerald-700 p-1 rounded-full"><i data-lucide="check-circle" class="w-3 h-3"></i></div>
-                            Suggests Pre-cleaning Methods
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 shadow-2xl text-slate-800">
-                    <!-- Upload Area -->
-                    <div id="drop-zone" class="border-2 border-dashed border-slate-300 rounded-xl h-80 flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden group transition-all hover:border-emerald-400">
-                        
-                        <!-- Placeholder -->
-                        <div id="upload-placeholder" class="text-center p-6 transition-all">
-                            <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
-                                <i data-lucide="camera" class="w-8 h-8"></i>
+                            
+                            <div class="space-y-6">
+                                <h3 class="font-bold text-slate-800 text-lg text-left">Preferences</h3>
+                              
+                                                <button class="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                Edit Profile
+                            </button>
+                            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 border border-red-100 text-red-500 bg-red-50/50 py-2.5 rounded-xl font-medium hover:bg-red-50 hover:border-red-200 transition-all">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                Log Out
+                            </button>
                             </div>
-                            <p class="font-semibold text-slate-700">Drop an image here</p>
-                            <p class="text-sm text-slate-500 mt-2 mb-4">or click to browse</p>
-                            <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm">
-                                Upload Photo
-                                <input type="file" id="file-input" class="hidden" accept="image/*">
-                            </label>
                         </div>
-
-                        <!-- Image Preview -->
-                        <img id="image-preview" src="" alt="Preview" class="w-full h-full object-cover rounded-lg hidden">
+                   <!-- end -->
+                   
+                 <!-- progress start -->
+                 
+                       <div class="mt-8 bg-emerald-50 rounded-xl p-6 border border-emerald-100 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i data-lucide="leaf" class="w-24 h-24 text-emerald-600"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-emerald-800 uppercase tracking-wider mb-1">Total Eco Points</p>
+                            <div class="flex items-baseline justify-center gap-1">
+                                <span class="text-4xl font-extrabold text-emerald-600" id="uPoints">0</span>
+                                <span class="text-emerald-500 font-medium">pts</span>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="flex justify-between text-xs font-semibold text-emerald-700 mb-1">
+                                    <span id="levelName">Level 0: Eco Warrior</span>
+                                    <span id="levelPercent">0%</span>
+                                </div>
+                                <div class="w-full bg-emerald-200 rounded-full h-2">
+                                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 0%" id="progressbar-style"></div>
+                                </div>
+                         
+                           </div>
+                        </div>
                         
-                        <!-- Loader Overlay -->
-                        <div id="scanner-loader" class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center backdrop-blur-sm hidden">
-                            <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                            <p class="text-white font-medium animate-pulse">Analyzing Material...</p>
-                        </div>
-                        
-                        <!-- Scanning Effect Overlay (Decorative) -->
-                        <div id="scan-effect" class="absolute inset-0 bg-emerald-500/10 pointer-events-none hidden"></div>
-                    </div>
+                    <!-- progress end -->
 
-                    <!-- Action Buttons -->
-                    <button id="analyze-btn" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-all hidden">
-                        Analyze Waste
-                    </button>
+                        <div class="mt-8 space-y-3">
 
-                    <!-- Result Card -->
-                    <div id="result-card" class="mt-6 animate-fadeIn hidden">
-                        <!-- Content injected via JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Location Section -->
-    <section id="locations" class="py-20 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Find a Recycling Center</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto">
-                    Locate the nearest collection points for your specific waste type. Filter by category to find exactly what you need.
-                </p>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8 h-[600px]">
-                <!-- Sidebar -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-full">
-                    <h3 class="font-bold text-lg mb-4">Categories</h3>
-                    <div class="flex flex-wrap gap-2 mb-6" id="filter-buttons">
-                        <button onclick="filterCenters('all')" class="filter-btn active px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-slate-800 text-white" data-type="all">All</button>
-                        <button onclick="filterCenters('mixed')" class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-type="mixed">General</button>
-                        <button onclick="filterCenters('glass')" class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-type="glass">Glass</button>
-                        <button onclick="filterCenters('ewaste')" class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-type="ewaste">E-Waste</button>
-                        <button onclick="filterCenters('bio')" class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-slate-100 text-slate-600 hover:bg-slate-200" data-type="bio">Organic</button>
-                    </div>
-
-                    <h3 class="font-bold text-lg mb-4">Nearest Centers</h3>
-                    <div id="centers-list" class="overflow-y-auto space-y-3 flex-1 pr-2 custom-scrollbar">
-                        <!-- List Items injected via JS -->
-                    </div>
-                </div>
-
-                <!-- Map Area -->
-                <div class="lg:col-span-2 bg-slate-200 rounded-2xl overflow-hidden relative shadow-inner group">
-                    <!-- Pseudo-Map Background -->
-                    <div class="absolute inset-0 opacity-60 mix-blend-multiply pointer-events-none"
-                        style="background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80'); background-size: cover; background-position: center; filter: grayscale(30%);">
-                    </div>
-                    
-                    <!-- Map Controls -->
-                    <div class="absolute top-4 right-4 flex flex-col gap-2">
-                        <button class="bg-white p-2 rounded-lg shadow-lg hover:bg-slate-50 text-slate-700">
-                            <i data-lucide="navigation" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-
-                    <!-- Map Pins Container -->
-                    <div id="map-pins-container" class="absolute inset-0 w-full h-full">
-                        <!-- Pins injected via JS -->
-                    </div>
-
-                    <!-- User Location Pin -->
-                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <div class="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg relative">
-                            <div class="absolute -inset-4 bg-blue-500/20 rounded-full animate-pulse"></div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-12">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center space-x-2 mb-6">
-                        <div class="bg-emerald-500 p-1.5 rounded-lg text-white">
-                            <i data-lucide="recycle" class="w-5 h-5"></i>
-                        </div>
-                        <span class="text-2xl font-bold text-white">EcoScan</span>
-                    </div>
-                    <p class="mb-6 max-w-sm leading-relaxed">
-                        Empowering communities to achieve zero waste through smart technology and accessible recycling solutions.
-                    </p>
-                </div>
+                </div><!---->
                 
-                <div>
-                    <h4 class="text-white font-bold mb-6">Quick Links</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" onclick="scrollToSection('home')" class="hover:text-emerald-400 transition-colors">Home</a></li>
-                        <li><a href="#" onclick="scrollToSection('features')" class="hover:text-emerald-400 transition-colors">Features</a></li>
-                        <li><a href="#" onclick="scrollToSection('scanner')" class="hover:text-emerald-400 transition-colors">Scanner</a></li>
-                        <li><a href="#" onclick="scrollToSection('locations')" class="hover:text-emerald-400 transition-colors">Locations</a></li>
-                    </ul>
-                </div>
+                <!------- start ------>
                 
-                <div>
-                    <h4 class="text-white font-bold mb-6">Contact</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start gap-3">
-                            <i data-lucide="map-pin" class="w-4 h-4 mt-1 text-emerald-500"></i>
-                            <span>123 Green Valley Road,<br />Eco District, CA 90210</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="mail" class="w-4 h-4 text-emerald-500"></i>
-                            <span>support@ecoscan.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                 <div class="lg:col-span-2 animate-fadeIn mt-8" style="animation-delay: 0.2s;">
+     <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 h-full flex flex-col">
+         
+         <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-2xl">
+             <div>
+                 <h3 class="text-xl font-bold text-slate-900">Reporting History</h3>
+                 <p class="text-sm text-slate-500">Track your contributions and rewards</p>
+             </div>
+             </div>
+             
+             <!-------- tables -------->
+             
+             <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider">
+                <th class="px-6 py-4 font-semibold">Date</th>
+                <th class="px-6 py-4 font-semibold">Type</th>
+                <th class="px-6 py-4 font-semibold">Status</th>
+                <th class="px-6 py-4 font-semibold">Points</th>
+            </tr>
+        </thead>
+        <tbody id="historyTable" class="divide-y divide-gray-100 text-sm">
             
-            <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
-                <p>&copy; 2026 EcoScan Systems. All rights reserved.</p>
-                <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white">Privacy Policy</a>
-                    <a href="#" class="hover:text-white">Terms of Service</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+        </tbody>
+    </table>
+</div>
+             <!-------- end tables. ------>
+             </div>
+         </div>
+         
+         <div class="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl text-center">
+             <button class="text-emerald-600 font-medium hover:underline text-sm">View All Activity</button>
+         </div>
+     </div>
+ </div>
+                <!----- end ------->
+    </main>
 
-    <!-- Scripts -->
     <script src="assets/js/main.js"></script>
+    <script src="backend/dashboard.js"></script>
+    <script src="backend/auth.js"></script>
     <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/auth.js"></script>
+    <script src="backend/waste-scanner.js"></script>
+    <script src="assets/js/chart.js"></script>
+    
 </body>
 </html>
-

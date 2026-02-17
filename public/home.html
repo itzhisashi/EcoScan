@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScan - Home & Dashboard Portal</title>
+    <link href="assets/img/logo.png" rel="icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/tools.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out; }
+        .animate-slideUp { animation: slideUp 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+        .no-scroll {
+             overflow: hidden;
+             height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-emerald-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location.href='#'">
+                    <div class="bg-emerald-500 p-2 rounded-lg text-white">
+                        <i data-lucide="recycle" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                        EcoScan
+                    </span>
+                </div>
+
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Home</a>
+                    <a href="#tools" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">Tools</a>
+                    <a href="#about" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">About</a>
+                    
+                    <a href="dashboard.html" class="flex items-center space-x-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full font-semibold border border-emerald-200 hover:bg-emerald-100 transition-all">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <button class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-full font-medium transition-colors" onclick="logout()">
+                        Log Out
+                    </button>
+                    
+                    
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-emerald-600 focus:outline-none">
+                        <i data-lucide="menu" class="w-7 h-7"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-50"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-teal-100 rounded-full blur-3xl opacity-50"></div>
+        
+        <div class="max-w-7xl mx-auto text-center relative z-10 animate-slideUp">
+            <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-200 rounded-full px-4 py-1.5 text-emerald-700 font-medium text-sm mb-6">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>v2.0 Now Live: Smart Reporting</span>
+            </div>
+            
+            <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6">
+                Manage Waste. <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+                    Earn Rewards.
+                </span>
+            </h1>
+            
+            <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Your all-in-one platform for identifying recyclables, finding collection centers, and tracking your environmental impact.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="dashboard.html" class="flex items-center justify-center space-x-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all transform hover:-translate-y-1">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span>Go to Dashboard</span>
+                </a>
+                <a href="tools.html" class="flex items-center justify-center space-x-2 bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-bold text-lg hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                    <i data-lucide="wrench" class="w-5 h-5"></i>
+                    <span>Explore Tools</span>
+                </a>
+            </div>
+        </div>
+        
+    </section>
+
+    <section id="tools" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">Our Tools</h2>
+                    <p class="text-slate-600 text-lg">Access our suite of waste management applications.</p>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div class="group bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="window.location.href='map.html'">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="map-pin" class="w-24 h-24 text-blue-600"></i>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4">
+                        <i data-lucide="map-pin" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Center Locator</h3>
+                    <p class="text-slate-600 text-sm mb-4">Find nearest recycling centers and drop-off points with GPS.</p>
+                    <span class="inline-flex items-center text-blue-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                        Find Locations <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </span>
+                </div>
+                
+                <div class="group bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="openModal('tool-streaming')">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="wifi" class="w-24 h-24 text-emerald-600"></i>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-4">
+                        <i data-lucide="wifi" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Streaming & Bandwidth</h3>
+                    <p class="text-slate-600 text-sm mb-4">Discover how video streaming, music playback, and data transfers affect the environment.</p>
+                    <span class="inline-flex items-center text-emerald-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                        Open Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </span>
+                </div>
+                
+
+                <div class="group bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="openModal('tool-cloud-server')">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="server" class="w-24 h-24 text-amber-600"></i>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-4">
+                        <i data-lucide="server" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Cloud & Server Load</h3>
+                    <p class="text-slate-600 text-sm mb-4">Analyze how cloud services and server activity contribute to carbon emissions.</p>
+                    <span class="inline-flex items-center text-amber-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                        File Report <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </span>
+                </div>
+
+                <div class="group bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="openModal('tool-device-lifecycle')">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="laptop" class="w-24 h-24 text-purple-600"></i>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
+                        <i data-lucide="laptop" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Device Lifecycle & Manufacturing</h3>
+                    <p class="text-slate-600 text-sm mb-4">Understand the environmental cost of electronic devices from manufacturing to disposal.</p>
+                    <span class="inline-flex items-center text-purple-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                        Check Balance <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="p-10 rounded-b-2xl text-center">
+             <button onclick="location.href='tools.html';" class="text-emerald-600 font-medium hover:underline text-sm">View All Tools</button>
+         </div>
+         
+         <!-- tools hidden content -->
+        <div id="toolModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+    
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            
+            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+                
+                <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-b border-slate-100 flex justify-between items-center">
+                    <button onclick="closeModal()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                    <h3 class="text-base font-semibold leading-6 text-slate-900" id="modal-title">Tool Workspace</h3>
+                </div>
+                
+                <div class="px-4 py-6 sm:px-6" id="modal-body-content">
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="tool-streaming-content" class="hidden">
+    <h2 class="text-xl font-bold mb-4 text-slate-800">
+    <i class="fa-solid text-emerald-600 fa-wifi"></i> Streaming & Bandwidth
+</h2>
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Video Streaming (Hours/Month)</label>
+            <input type="number" id="streamHours" value="10" class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" oninput="calculate()">
+            <p class="text-xs text-gray-400">Assuming HD Quality (3GB/hr)</p>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Music/Data Bandwidth (GB/Month)</label>
+            <input type="number" id="dataGB" value="5" class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" oninput="calculate()">
+        </div>
+    </div>
+    <div class="bg-emerald-50 p-4 rounded-lg space-y-3">
+        <div class="flex justify-between border-b border-emerald-200 pb-2">
+            <span class="text-sm text-gray-600">Streaming Carbon Cost</span>
+            <span class="font-bold text-emerald-800" id="res_streaming">0 gCO2e</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-sm text-gray-600">Video & Music Energy</span>
+            <span class="font-bold text-emerald-800" id="res_bandwidth">0 kWh</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tool-cloud-server-content" class="hidden">
+        <h2 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+     <i class="fa-solid fa-server text-orange-500"></i> Cloud & Server Load
+ </h2>
+ <div class="grid md:grid-cols-2 gap-6">
+     <div class="space-y-4">
+         <div>
+             <label class="block text-sm font-medium text-gray-600">Server CPU Utilization (%)</label>
+             <input type="range" id="cpuLoad" min="0" max="100" value="50" class="w-full mt-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" oninput="calculate()">
+             <div class="text-right text-xs text-orange-600 font-bold" id="cpuVal">50%</div>
+         </div>
+         <div>
+             <label class="block text-sm font-medium text-gray-600">Active Storage (Terabytes)</label>
+             <input type="number" id="storageTB" value="1" class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" oninput="calculate()">
+         </div>
+         <div>
+             <label class="block text-sm font-medium text-gray-600">Emails Sent/Received (Monthly)</label>
+             <input type="number" id="emailCount" value="1000" class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" oninput="calculate()">
+         </div>
+     </div>
+     <div class="bg-orange-50 p-4 rounded-lg space-y-3">
+         <div class="flex justify-between border-b border-orange-200 pb-2">
+             <span class="text-sm text-gray-600">Cloud Server Load (Energy)</span>
+             <span class="font-bold text-orange-800" id="res_serverEnergy">0 kWh</span>
+         </div>
+         <div class="flex justify-between border-b border-orange-200 pb-2">
+             <span class="text-sm text-gray-600">Data Center Emissions</span>
+             <span class="font-bold text-orange-800" id="res_emissions">0 gCO2e</span>
+         </div>
+         <div class="flex justify-between border-b border-orange-200 pb-2">
+             <span class="text-sm text-gray-600">Server Storage Energy</span>
+             <span class="font-bold text-orange-800" id="res_storage">0 kWh</span>
+         </div>
+         <div class="flex justify-between">
+             <span class="text-sm text-gray-600">Email & Spam Impact</span>
+             <span class="font-bold text-orange-800" id="res_email">0 gCO2e</span>
+         </div>
+     </div>
+ </div>
+    </div>
+    
+    <div id="tool-device-lifecycle-content" class="hidden">
+        <h2 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+    <i class="fa-solid fa-laptop text-purple-500"></i> Device Lifecycle & Manufacturing
+</h2>
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Select Primary Device</label>
+            <select id="deviceType" class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" onchange="calculate()">
+                <option value="laptop">Standard Laptop (14 inch)</option>
+                <option value="desktop">Desktop PC + Monitor</option>
+                <option value="smartphone">Smartphone (High-end)</option>
+                <option value="server">Rack Server (1 Unit)</option>
+            </select>
+        </div>
+        <div class="p-4 bg-purple-50 rounded-lg text-sm text-purple-800">
+            <p><strong>Note:</strong> Manufacturing accounts for nearly 80% of a user device's total lifetime carbon footprint.</p>
+        </div>
+    </div>
+    <div class="bg-purple-50 p-4 rounded-lg space-y-3">
+        <div class="flex justify-between border-b border-purple-200 pb-2">
+            <span class="text-sm text-gray-600">Manufacturing Footprint</span>
+            <span class="font-bold text-purple-800" id="res_manufacturing">0 kgCO2e</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-sm text-gray-600">Device Lifecycle (Avg)</span>
+            <span class="font-bold text-purple-800" id="res_lifecycle">0 Years</span>
+        </div>
+    </div>
+</div>
+    </div>
+        
+         <!-- end tools hidden content -->
+    </section>
+
+    <section id="about" class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <h2 class="text-3xl font-bold text-slate-900">Why use EcoScan?</h2>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                                <i data-lucide="check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900">Precision Sorting</h4>
+                                <p class="text-slate-600">Reduce contamination in recycling bins by knowing exactly what goes where.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                                <i data-lucide="check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900">Community Impact</h4>
+                                <p class="text-slate-600">Your reports help municipalities keep streets clean and optimize waste collection.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                                <i data-lucide="check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900">Track Progress</h4>
+                                <p class="text-slate-600">Visualize your personal contribution to a greener planet via the Dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-gray-700">
+    <i class="fa-solid fa-recycle text-green-500 mr-2"></i>Daily Recycled Waste Report
+</h3>
+                        <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">Live Updates</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        
+                        
+                        <!-- start -->
+                        
+                        <table class="w-full text-sm text-left text-gray-500">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+            <th class="px-6 py-3">Category</th>
+            <th class="px-6 py-3">Specific Item / Metric</th>
+            <th class="px-6 py-3">Recycled Amt (Daily)</th>
+        </tr>
+    </thead>
+    <tbody id="waste-metrics-table">
+    </tbody>
+</table>
+<div class="bg-gray-50 px-6 py-3 border-t border-gray-100 text-right">
+        <span class="text-xs text-gray-500">Total Diversion Rate: </span>
+        <span class="font-bold text-gray-800" id="total-diversion">0%</span>
+    </div>
+                        
+                        
+                        <!-- end -->
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 bg-emerald-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#34d399 1px, transparent 1px); background-size: 30px 30px;"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Our Collective Impact</h2>
+            <p class="text-emerald-100/80">See what the EcoScan community has achieved together this month.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-emerald-800/50">
+            <div class="p-4">
+                <div class="text-4xl md:text-5xl font-bold text-emerald-400 mb-2">12k+</div>
+                <div class="text-sm md:text-base text-emerald-100 font-medium">Items Scanned</div>
+            </div>
+            <div class="p-4">
+                <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">850</div>
+                <div class="text-sm md:text-base text-emerald-100 font-medium">Illegal Dumps Reported</div>
+            </div>
+            <div class="p-4">
+                <div class="text-4xl md:text-5xl font-bold text-amber-400 mb-2">5.2T</div>
+                <div class="text-sm md:text-base text-emerald-100 font-medium">CO2 Offset</div>
+            </div>
+            <div class="p-4">
+                <div class="text-4xl md:text-5xl font-bold text-purple-400 mb-2">₹362k+</div>
+                <div class="text-sm md:text-base text-emerald-100 font-medium">Rewards Redeemed</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid md:grid-cols-4 gap-12">
+              <div class="col-span-1 md:col-span-2">
+                  <div class="flex items-center space-x-2 mb-6">
+                      <div class="bg-emerald-500 p-1.5 rounded-lg text-white">
+                          <i data-lucide="recycle" class="w-5 h-5"></i>
+                      </div>
+                      <span class="text-2xl font-bold text-white">EcoScan</span>
+                  </div>
+                  <p class="mb-6 max-w-sm leading-relaxed">
+                      Empowering communities to achieve zero waste through smart technology and accessible recycling solutions.
+                  </p>
+              </div>
+              
+              <div>
+                  <h4 class="text-white font-bold mb-6">Quick Links</h4>
+                  <ul class="space-y-3">
+                      <li><a href="#" onclick="scrollToSection('home')" class="hover:text-emerald-400 transition-colors">Home</a></li>
+                      <li><a href="#" onclick="scrollToSection('features')" class="hover:text-emerald-400 transition-colors">Features</a></li>
+                      <li><a href="#" onclick="scrollToSection('scanner')" class="hover:text-emerald-400 transition-colors">Scanner</a></li>
+                      <li><a href="#" onclick="scrollToSection('locations')" class="hover:text-emerald-400 transition-colors">Locations</a></li>
+                  </ul>
+              </div>
+              
+              <div>
+                  <h4 class="text-white font-bold mb-6">Contact</h4>
+                  <ul class="space-y-3">
+                      <li class="flex items-start gap-3">
+                          <i data-lucide="map-pin" class="w-4 h-4 mt-1 text-emerald-500"></i>
+                          <span>123 Green Valley Road,<br />Eco District, CA 90210</span>
+                      </li>
+                      <li class="flex items-center gap-3">
+                          <i data-lucide="mail" class="w-4 h-4 text-emerald-500"></i>
+                          <span>support@ecoscan.com</span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          
+          <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+              <p>&copy; 2026 EcoScan Systems. All rights reserved.</p>
+              <div class="flex space-x-6 mt-4 md:mt-0">
+                  <a href="#" class="hover:text-white">Privacy Policy</a>
+                  <a href="#" class="hover:text-white">Terms of Service</a>
+              </div>
+          </div>
+      </div>
+  </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script src="backend/auth.js"></script>
+    <script src="backend/dashboard.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/tools.js"></script>
+    <script src="assets/js/home.js"></script>
+</body>
+</html>
