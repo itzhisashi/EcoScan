@@ -1,150 +1,217 @@
+  // --- CONFIGURATION ---
+  const JSON_FILE = 'nagpur_recycling_pincode.json'; // Your file name
+  let map, markersLayer, userMarker;
+  let allRecyclers = [];
   
-        // 1. Initialize Map centered on Nagpur
-        var map = L.map('map').setView([21.1458, 79.0882], 12);
-
-        // 2. Add OpenStreetMap Tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
-        // --- DEFINING THE ICONS ---
-        // We use different colored markers for different types of centers
-        var nmcIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-        });
-
-        var scrapIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-        });
-
-        var ewasteIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-        });
-
-        // --- DATA: ALL LOCATIONS IN NAGPUR ---
-        var locations = [
-            // --- NMC GARBAGE TRANSFER STATIONS (Red) ---
-            { lat: 21.1300, lng: 79.1600, title: "Bhandewadi Dumping Yard", type: "NMC", desc: "Main Municipal Dump Yard" },
-            { lat: 21.1478, lng: 79.1151, title: "Mangalwari Market Station", type: "NMC", desc: "Garbage Transfer Station" },
-            { lat: 21.1639, lng: 79.0989, title: "Kamal Chowk / Kamal Bazaar", type: "NMC", desc: "Waste Collection Point" },
-            { lat: 21.1500, lng: 79.1100, title: "Budhwar Bazar (Mahal)", type: "NMC", desc: "Market Waste Collection" },
-            { lat: 21.1400, lng: 79.0800, title: "Mor Bhavan (Sitabuldi)", type: "NMC", desc: "City Center Transfer Point" },
-            { lat: 21.1406, lng: 79.0778, title: "Cotton Market", type: "NMC", desc: "Vegetable Waste Collection" },
-            { lat: 21.1200, lng: 79.0700, title: "Chunna Bhatti (Ajni Area)", type: "NMC", desc: "Transfer Station" },
-
-            // --- PRIVATE SCRAP DEALERS (Green) ---
-            { lat: 21.1500, lng: 79.0900, title: "Shree Bajrang Sales", type: "Scrap", desc: "Metal & Industrial Scrap" },
-            { lat: 21.1300, lng: 79.0800, title: "A V Sales Corp (Dhantoli)", type: "Scrap", desc: "General Scrap Dealer" },
-            { lat: 21.1480, lng: 79.1150, title: "Dhanraj Steel Traders", type: "Scrap", desc: "Steel & Iron Scrap" },
-            { lat: 21.1100, lng: 78.9800, title: "S K Scrap Traders (Hingna)", type: "Scrap", desc: "Industrial Waste Recycler" },
-            { lat: 21.1500, lng: 78.9900, title: "Galaxy Enterprises (Wadi)", type: "Scrap", desc: "Plastic & Metal Scrap" },
-            { lat: 21.2333, lng: 79.2000, title: "Kamptee Scrap Zone", type: "Scrap", desc: "Regional Scrap Hub" },
-            { lat: 21.1150, lng: 79.1230, title: "Fhizhan Scrap (Taj Bagh)", type: "Scrap", desc: "Local Scrap Dealer" },
-            { lat: 21.0914, lng: 79.1076, title: "Manewada Recycling Unit", type: "Scrap", desc: "Paper & Plastic" },
-            { lat: 21.1958, lng: 79.0558, title: "Gorewada Scrap Point", type: "Scrap", desc: "General Waste" },
-            { lat: 21.1000, lng: 79.1300, title: "Sudam Nagari Collection", type: "Scrap", desc: "Dighori Area Collection" },
-    { 
-        lat: 21.2333, 
-        lng: 79.1950, 
-        title: "Kamptee Cantonment Waste Plant", 
-        type: "NMC", 
-        desc: "Official Cantonment Board waste processing unit." 
-    },
-    { 
-        lat: 21.2250, 
-        lng: 79.2000, 
-        title: "Dragon Palace Area Collection", 
-        type: "NMC", 
-        desc: "Public waste collection point near temple grounds." 
-    },
-    { 
-        lat: 21.2180, 
-        lng: 79.1850, 
-        title: "Yerkheda Gram Panchayat Dump", 
-        type: "NMC", 
-        desc: "Local village waste transfer station." 
-    },
-    { 
-        lat: 21.2290, 
-        lng: 79.1910, 
-        title: "Kamptee Main Market Scrap", 
-        type: "Scrap", 
-        desc: "General paper and plastic scrap dealer." 
-    },
-    { 
-        lat: 21.2400, 
-        lng: 79.2100, 
-        title: "New Kamptee Metal Works", 
-        type: "Scrap", 
-        desc: "Iron and heavy metal scrap yard." 
-    },
-    { 
-        lat: 21.2150, 
-        lng: 79.1750, 
-        title: "Teka Naka Recycling Hub", 
-        type: "Scrap", 
-        desc: "Large scale plastic and bottle recycling." 
-    },
-    { 
-        lat: 21.2220, 
-        lng: 79.1980, 
-        title: "Modi Padau Kabadi", 
-        type: "Scrap", 
-        desc: "Small scale household waste buyer." 
-    },
-    { 
-        lat: 21.2100, 
-        lng: 79.1600, 
-        title: "Automotive Square E-Collection", 
-        type: "E-Waste", 
-        desc: "Nearest major E-Waste drop-off point for Kamptee." 
-    },
-            // --- E-WASTE RECYCLERS (Blue) ---
-            { lat: 20.9500, lng: 79.0000, title: "Suritex E-Waste (Butibori)", type: "E-Waste", desc: "Major E-Waste Plant" },
-            { lat: 21.1500, lng: 78.9950, title: "Zebronics Collection (Wadi)", type: "E-Waste", desc: "Electronics Drop-off" },
-            { lat: 21.1100, lng: 79.0500, title: "ServCare E-Waste", type: "E-Waste", desc: "Authorized E-Waste Collector" }
-        ];
-
-        // --- ADDING MARKERS TO MAP ---
-        locations.forEach(function(loc) {
-            var iconToUse;
-            if(loc.type === "NMC") iconToUse = nmcIcon;
-            else if(loc.type === "E-Waste") iconToUse = ewasteIcon;
-            else iconToUse = scrapIcon;
-
-            L.marker([loc.lat, loc.lng], {icon: iconToUse})
-             .addTo(map)
-             .bindPopup(`<b>${loc.title}</b><br>${loc.desc}<br><span style="font-size:11px;color:grey">${loc.type}</span>`);
-        });
-
-        // --- ADD LEGEND (Bottom Right) ---
-        var legend = L.control({position: 'bottomright'});
-
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'legend');
-            div.innerHTML += '<i style="background: red"></i> NMC Transfer Station<br>';
-            div.innerHTML += '<i style="background: green"></i> Scrap/Recycling Dealer<br>';
-            div.innerHTML += '<i style="background: blue"></i> E-Waste Center<br>';
-            return div;
-        };
-
-        legend.addTo(map);
-
-        // --- LIVE USER LOCATION ---
-        function onLocationFound(e) {
-            var radius = e.accuracy / 2;
-            L.circle(e.latlng, radius).addTo(map);
-            L.marker(e.latlng).addTo(map)
-                .bindPopup("<b>📍 You are here</b>").openPopup();
-        }
-        
-        // Ask for location
-        map.locate({setView: true, maxZoom: 13});
-        map.on('locationfound', onLocationFound);
+  // --- 1. INITIALIZE MAP ---
+  function initMap() {
+      // Start centered on India or a default location
+      map = L.map('map').setView([21.1458, 79.0882], 13); // Default Nagpur
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+      
+      markersLayer = L.layerGroup().addTo(map);
+  }
+  
+  // --- 2. LOAD JSON DATA ---
+  async function loadData() {
+      const status = document.getElementById('statusMsg');
+      try {
+          status.innerText = "Loading database...";
+          const response = await fetch(JSON_FILE);
+          if (!response.ok) throw new Error("File not found");
+          
+          allRecyclers = await response.json();
+          status.innerText = `Database loaded: ${allRecyclers.length} centers.`;
+          
+          // Show all initially
+          plotMarkers(allRecyclers);
+          
+      } catch (error) {
+          console.error(error);
+          status.innerHTML = `<span class="text-red-500">Error: Could not load '${JSON_FILE}'. Ensure you are running a local server.</span>`;
+      }
+  }
+  
+  // --- 3. CORE LOGIC: FIND NEARBY ---
+  async function findNearby() {
+      const pin = document.getElementById('pincode').value.trim();
+      const status = document.getElementById('statusMsg');
+      
+      if (!pin) {
+          status.innerText = "Please enter a PIN code.";
+          return;
+      }
+      
+      status.innerText = `Searching location for ${pin}...`;
+      
+      try {
+          // Step A: Geocode PIN (Get Lat/Lng from text)
+          const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${pin}&countrycodes=in&limit=1`;
+          const geoRes = await fetch(geoUrl);
+          const geoData = await geoRes.json();
+          
+          if (!geoData || geoData.length === 0) {
+              status.innerHTML = `<span class="text-red-500">Location not found for PIN ${pin}</span>`;
+              return;
+          }
+          
+          const userLat = parseFloat(geoData[0].lat);
+          const userLng = parseFloat(geoData[0].lon);
+          const displayName = geoData[0].display_name;
+          
+          // Step B: Calculate distances
+          const nearbyData = allRecyclers.map(site => {
+              const dist = getDistanceFromLatLonInKm(userLat, userLng, site.lat, site.lng);
+              return { ...site, distance: dist };
+          });
+          
+          // Step C: Sort by closest distance
+          nearbyData.sort((a, b) => a.distance - b.distance);
+          
+          // Step D: Filter (e.g., show top 5 closest)
+          const topResults = nearbyData.slice(0, 5);
+          
+          // Step E: Update Map & UI
+          updateMapWithResults(userLat, userLng, topResults, displayName);
+          updateSidebar(topResults);
+          
+          status.innerText = `Found ${topResults.length} centers near ${pin}.`;
+          
+      } catch (err) {
+          console.error(err);
+          status.innerText = "Error searching. Check internet.";
+      }
+  }
+  
+  // --- 4. MAP UPDATE HELPER ---
+  function updateMapWithResults(lat, lng, results, locName) {
+      markersLayer.clearLayers();
+      if (userMarker) map.removeLayer(userMarker);
+      
+      // 1. Add User Marker (Blue Pulse)
+      const userIcon = L.divIcon({
+          className: 'user-marker',
+          html: `<div class="relative w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg">
+                        <div class="absolute -inset-2 bg-blue-500 rounded-full opacity-30 animate-ping"></div>
+                       </div>`,
+          iconSize: [20, 20]
+      });
+      userMarker = L.marker([lat, lng], { icon: userIcon })
+          .addTo(map)
+          .bindPopup(`<span style="padding:20px;text-align:left;"><b>Your Search Area:</b><br>${locName}</span>`)
+          .openPopup();
+      
+      // 2. Add Factory Markers
+      plotMarkers(results);
+      
+      // 3. Zoom to fit
+      const group = new L.featureGroup([
+          userMarker,
+          ...results.map(r => L.marker([r.lat, r.lng]))
+      ]);
+      map.flyToBounds(group.getBounds(), { padding: [50, 50], duration: 1.5 });
+  }
+  
+  // --- 5. PLOT MARKERS ---
+  function plotMarkers(data) {
+      data.forEach(loc => {
+          const icon = getIcon(loc.type);
+          const popup = `
+                    <div class="font-sans">
+                        <div class="bg-gray-800 text-white p-2 rounded-t text-xs font-bold uppercase flex justify-between">
+                            <span>${loc.type}</span>
+                                                            <span class="text-yellow-400 text-xs font-bold px-5">★ ${loc.rating}</span>
+                               
+                        </div>
+                        <div class="p-3">
+                            <h3 class="font-bold text-sm">${loc.name}</h3>
+                            <p class="text-xs text-gray-500 my-1">${loc.address}</p>
+                            ${loc.distance ? `<p class="text-xs font-semibold text-green-600 mb-2">${loc.distance.toFixed(1)} km away</p>` : ''}
+                            <a href="tel:${loc.phone}" class="block text-center bg-green-100 text-green-700 text-xs font-bold py-1.5 rounded hover:bg-green-200">Call Now</a>
+                        </div>
+                    </div>
+                `;
+          L.marker([loc.lat, loc.lng], { icon: icon }).addTo(markersLayer).bindPopup(popup);
+      });
+      lucide.createIcons();
+  }
+  
+  // --- 6. UPDATE SIDEBAR LIST ---
+  function updateSidebar(data) {
+      const list = document.getElementById('resultsList');
+      const panel = document.getElementById('resultsPanel');
+      
+      list.innerHTML = '';
+      panel.classList.remove('hidden');
+      
+      data.forEach(loc => {
+          const item = document.createElement('div');
+          item.className = "bg-white p-3 rounded-lg border border-gray-100 hover:shadow-md transition-shadow cursor-pointer";
+          item.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-semibold text-sm text-gray-800">${loc.name}</h3>
+                        <span class="bg-gray-100 text-gray-600 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold">${loc.type}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1 truncate">${loc.address}</p>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-xs font-bold text-green-600 flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3 h-3"></i> ${loc.distance.toFixed(2)} km
+                        </span>
+                        <span class="text-xs text-yellow-500">★ ${loc.rating}</span>
+                    </div>
+                `;
+          
+          // Click list item to fly to map marker
+          item.onclick = () => {
+              map.flyTo([loc.lat, loc.lng], 16);
+          };
+          
+          list.appendChild(item);
+      });
+      lucide.createIcons();
+  }
+  
+  // --- UTILS ---
+  function getIcon(type) {
+      let color = 'gray';
+      if (type === 'ewaste') color = 'purple';
+      if (type === 'plastic') color = 'blue';
+      if (type === 'metal') color = 'orange';
+      
+      return L.divIcon({
+          className: 'custom-pin',
+          html: `<div class="w-8 h-8 bg-white rounded-full border-2 border-${color}-500 flex items-center justify-center shadow-md">
+                        <i data-lucide="recycle" class="w-4 h-4 text-${color}-600"></i>
+                       </div>`,
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+      });
+  }
+  
+  // Haversine Formula (Calculate distance between two Lat/Lngs in KM)
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = deg2rad(lat2 - lat1);
+      var dLon = deg2rad(lon2 - lon1);
+      var a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d;
+  }
+  
+  function deg2rad(deg) {
+      return deg * (Math.PI / 180)
+  }
+  
+  // --- STARTUP ---
+  window.onload = () => {
+      initMap();
+      loadData();
+      lucide.createIcons();
+  };
