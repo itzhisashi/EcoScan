@@ -57,7 +57,7 @@ async function loadProfile(token) {
             
             const impact = calculateImpact(points);
 
-            document.getElementById("coCarbon").innerText = impact.co2.toFixed(2) + " kg";
+            document.getElementById("coCarbon").innerText = impact.co2.toFixed(2);
             document.getElementById("treePlanted").innerText = impact.trees.toFixed(2);
             
             const level = calculateLevel(points);
