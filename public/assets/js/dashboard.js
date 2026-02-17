@@ -40,47 +40,7 @@
    }
  }
  
- // 3. Scanner Simulation Logic
-/* function simulateScan() {
-   const placeholder = document.getElementById('upload-placeholder');
-   const imageView = document.getElementById('scan-image-view');
-   const resultEmpty = document.getElementById('scan-result-empty');
-   const resultSuccess = document.getElementById('scan-result-success');*/
-   
-   // Show Scanning UI
- /*  placeholder.classList.add('hidden');
-   imageView.classList.remove('hidden');*/
-   
-   // After 2 seconds, show results
- /*  setTimeout(() => {
-     resultEmpty.classList.add('hidden');
-     resultSuccess.classList.remove('hidden');
-     resultSuccess.classList.add('animate-fadeIn');
-   }, 2500);
- }*/
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- // 4. Chart Initialization
+ // 3. Chart Initialization
 
  const ctxov = document.getElementById('overviewChart').getContext('2d');
  new Chart(ctxov, {
@@ -104,61 +64,8 @@
    }
  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
- var map = L.map('map-container').setView([51.505, -0.09], 13);
- 
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-   attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
- }).addTo(map);
- 
- 
- L.marker([51.505, -0.09]).addTo(map)
-   .bindPopup('<b>Green City Recyclers</b><br>Plastic & Paper').openPopup();
- 
- L.marker([51.51, -0.1]).addTo(map)
-   .bindPopup('<b>Tech Dump E-Waste</b><br>Electronics Only');
-   
-       */
        
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-        
-        const recyclers = [
-            
+ const recyclers = [
   {
     "id": 1,
     "name": "Dharampeth Plastic Recycling Center",
@@ -660,7 +567,7 @@
     "rating": 3.9
   }
 
-            ];
+];
 
      
         function getIcon(type) {
