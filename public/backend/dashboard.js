@@ -394,3 +394,161 @@ function copyCoupon() {
     });
 }
 
+/* ============================== Edit Profile / Setting ============================ */
+
+/* ================= SETTINGS & PROFILE UPDATES ================= */
+
+function openSettingsModal() {
+    document.getElementById('settingsModal').classList.remove('hidden');
+    // Clear fields
+    document.getElementById('setNewUsername').value = '';
+    document.getElementById('setNewPassword').value = '';
+    document.getElementById('setNewEmail').value = '';
+    document.getElementById('emailOtp').value = '';
+    document.getElementById('basicMsg').innerText = '';
+    document.getElementById('emailMsg').innerText = '';
+    
+    // Reset Email UI to Step 1
+    document.getElementById('emailStep1').classList.remove('hidden');
+    document.getElementById('emailStep2').classList.add('hidden');
+}
+
+function closeSettingsModal() {
+    document.getElementById('settingsModal').classList.add('hidden');
+}
+
+// 1. Save Username or Password
+async function saveBasicSettings() {
+    const token = localStorage.getItem("token");
+    const newUsername = document.getElementById('setNewUsername').value.trim();
+    const newPassword = document.getElementById('setNewPassword').value.trim();
+    const btn = document.getElementById('saveBasicBtn');
+    const msg = document.getElementById('basicMsg');
+
+    if (!newUsername && !newPassword) return;
+
+    btn.disabled = true;
+    btn.innerHTML = 'Saving...';
+    msg.innerText = '';
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "update_profile",
+                token: token,
+                newUsername: newUsername,
+                newPassword: newPassword
+            })
+        });
+        const data = await res.json();
+        
+        msg.style.color = data.status === "success" ? "#16a34a" : "#ef4444";
+        msg.innerText = data.message;
+        
+        if (data.status === "success") {
+            setTimeout(() => location.reload(), 1500); // Reload to reflect changes
+        }
+    } catch (e) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Connection error.";
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Changes';
+    }
+}
+
+// 2. Request OTP for Email Change
+async function requestEmailOTP() {
+    const token = localStorage.getItem("token");
+    const newEmail = document.getElementById('setNewEmail').value.trim();
+    const btn = document.getElementById('sendOtpBtn');
+    const msg = document.getElementById('emailMsg');
+
+    if (!newEmail || !newEmail.includes('@')) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Enter a valid email.";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = 'Sending...';
+    msg.innerText = '';
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "request_email_change",
+                token: token,
+                newEmail: newEmail
+            })
+        });
+        const data = await res.json();
+        
+        if (data.status === "success") {
+            msg.style.color = "#16a34a";
+            msg.innerText = data.message;
+            // Switch UI to OTP step
+            document.getElementById('emailStep1').classList.add('hidden');
+            document.getElementById('emailStep2').classList.remove('hidden');
+        } else {
+            msg.style.color = "#ef4444";
+            msg.innerText = data.message;
+            btn.disabled = false;
+            btn.innerHTML = 'Send Verification Code';
+        }
+    } catch (e) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Connection error.";
+        btn.disabled = false;
+        btn.innerHTML = 'Send Verification Code';
+    }
+}
+
+// 3. Verify OTP and Update Email
+async function verifyEmailOTP() {
+    const token = localStorage.getItem("token");
+    const otp = document.getElementById('emailOtp').value.trim();
+    const btn = document.getElementById('verifyOtpBtn');
+    const msg = document.getElementById('emailMsg');
+
+    if (otp.length !== 6) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Enter the 6-digit code.";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = 'Verifying...';
+    msg.innerText = '';
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "verify_email_change",
+                token: token,
+                otp: otp
+            })
+        });
+        const data = await res.json();
+        
+        msg.style.color = data.status === "success" ? "#16a34a" : "#ef4444";
+        msg.innerText = data.message;
+        
+        if (data.status === "success") {
+            // Update UI elements instantly to avoid confusion
+            document.getElementById("uEmail").innerText = data.newEmail;
+            setTimeout(closeSettingsModal, 2000);
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = 'Verify & Update Email';
+        }
+    } catch (e) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Connection error.";
+        btn.disabled = false;
+        btn.innerHTML = 'Verify & Update Email';
+    }
+}
