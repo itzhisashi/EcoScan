@@ -1,6 +1,6 @@
 /* CONFIG */
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwagXkfnb2xKxOkfU00tRcwD4IvV6Wgx9p6ACqP_KgTStu75z59yH3I8450LiB8QoMp/exec";
+  "https://script.google.com/macros/s/AKfycbyZ4HRHejxZmhObT8GqMDGp4Jl002xupo50QaB8nyPPvjhxuBbxlTTW-P0GIxzYErv7/exec";
 
 /* HELPERS */
 function el(id) {
