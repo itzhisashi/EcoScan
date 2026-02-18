@@ -678,6 +678,8 @@
                
               
   
+ <div id="section-challenge" class="tab-content hidden animate-fadeIn h-full flex flex-col space-y-8">
+  
   <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-green-400 p-8 text-white shadow-xl shadow-emerald-200/50">
     <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
     <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-900/10 rounded-full blur-2xl"></div>
@@ -686,30 +688,23 @@
       <div class="flex justify-between items-start">
         <div>
           <h2 class="text-2xl font-bold tracking-tight">Eco Focus Challenge</h2>
-          <p class="mt-1 text-emerald-50 opacity-90 text-sm italic">
-            "Small acts, when multiplied by millions, can transform the world." 🌍
-          </p>
+          <p class="mt-1 text-emerald-50 opacity-90 text-sm italic">"Small acts, when multiplied by millions, can transform the world." 🌍</p>
         </div>
-        <div class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold border border-white/30">
-          Season 1
-        </div>
+        <div class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold border border-white/30">Season 1</div>
       </div>
 
       <div class="mt-8">
         <div class="flex justify-between items-end mb-2">
           <span class="text-sm font-medium">Monthly Milestone</span>
-          <span class="text-xs font-bold bg-emerald-700/30 px-2 py-0.5 rounded-lg">12% Complete</span>
+          <span id="monthlyPercentText" class="text-xs font-bold bg-emerald-700/30 px-2 py-0.5 rounded-lg">0% Complete</span>
         </div>
         <div class="w-full h-4 bg-black/10 rounded-full p-1 overflow-hidden backdrop-blur-sm">
-          <div class="h-full w-[12%] bg-white rounded-full shadow-sm transition-all duration-1000 ease-out"></div>
+          <div id="monthlyProgressBar" class="h-full w-[0%] bg-white rounded-full shadow-sm transition-all duration-1000 ease-out"></div>
         </div>
         <div class="flex justify-between mt-3 text-[11px] font-medium opacity-80 uppercase tracking-wider">
-          <span>3 / 25 Actions</span>
+          <span id="monthlyActionsText">0 / 25 Actions</span>
           <span class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            10 Days Left
+            <i data-lucide="clock" class="h-3 w-3"></i> <span id="daysLeftText">0 Days Left</span>
           </span>
         </div>
       </div>
@@ -719,105 +714,23 @@
   <div class="mt-8 bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h3 class="font-bold text-slate-800 text-lg">Daily Streak</h3>
+        <h3 class="font-bold text-slate-800 text-lg">Daily Streak (<span id="streakCount">0</span>🔥)</h3>
         <p class="text-xs text-slate-500">Check in daily to multiply your rewards</p>
       </div>
-      <button class="group flex items-center gap-2 text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-600 hover:text-white transition-all duration-300">
-        Claim All
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
+      <button id="claimStreakBtn" onclick="claimDailyStreak()" class="group flex items-center gap-2 text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-600 hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+        Claim Now
+        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
       </button>
     </div>
 
-    <div class="grid grid-cols-3 gap-4">
-      <div class="relative group cursor-pointer">
-        <div class="bg-gradient-to-b from-emerald-50 to-white border-2 border-emerald-500 rounded-2xl p-4 text-center transition-transform hover:scale-[1.02]">
-          <span class="absolute -top-2 -right-2 flex h-5 w-5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] text-white">✓</span>
-          </span>
-          <div class="text-emerald-600 text-xl font-black">+20</div>
-          <p class="text-[10px] font-bold text-slate-500 uppercase mt-1 tracking-tighter">Day 1</p>
-        </div>
+    <div class="grid grid-cols-3 gap-4" id="streakCardsContainer">
       </div>
-
-      <div class="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-4 text-center opacity-60">
-        <div class="text-xl grayscale opacity-50 text-slate-400 font-bold">+50</div>
-        <p class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tighter">Day 2</p>
-      </div>
-
-      <div class="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-4 text-center opacity-60">
-        <div class="text-xl grayscale opacity-50 text-slate-400 font-bold">+100</div>
-        <p class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tighter">Day 3</p>
-      </div>
-    </div>
   </div>
 
-  <div class="mt-8 space-y-4">
-    <div class="flex items-center justify-between px-2">
-      <h3 class="font-bold text-slate-800">Active Tasks</h3>
-      <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">3 Tasks Available</span>
-    </div>
-    
-    <div class="group bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:border-emerald-200 transition-all hover:shadow-md">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex gap-4">
-          <div class="p-3 bg-emerald-50 rounded-xl text-xl group-hover:scale-110 transition-transform">♻️</div>
-          <div>
-            <h4 class="font-bold text-slate-800">Recycle Waste</h4>
-            <p class="text-xs text-slate-500">Duration: 25 mins of sorting</p>
-          </div>
-        </div>
-        <div class="flex flex-col items-end">
-           <span class="text-sm font-bold text-emerald-600">+10 PTS</span>
-           <span class="text-[10px] text-slate-400 font-medium">Daily Task</span>
-        </div>
-      </div>
+  <div class="mt-8 space-y-4" id="activeTasksContainer">
+     </div>
 
-      <div class="space-y-2">
-        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wide">
-          <span>Current Progress</span>
-          <span>10 / 25 min</span>
-        </div>
-        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-          <div class="h-full w-[35%] bg-gradient-to-r from-emerald-500 to-green-400 rounded-full transition-all"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="group bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:border-emerald-200 transition-all hover:shadow-md">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex gap-4">
-          <div class="p-3 bg-amber-50 rounded-xl text-xl group-hover:scale-110 transition-transform">🌱</div>
-          <div>
-            <h4 class="font-bold text-slate-800">Correct Disposal</h4>
-            <p class="text-xs text-slate-500">Submit 2 photos of proper disposal</p>
-          </div>
-        </div>
-        <div class="flex flex-col items-end">
-           <span class="text-sm font-bold text-emerald-600">+15 PTS</span>
-           <span class="text-[10px] text-amber-500 font-medium uppercase">High Reward</span>
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wide">
-          <span>Current Progress</span>
-          <span>1 / 2 times</span>
-        </div>
-        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-          <div class="h-full w-[50%] bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center pt-4">
-      <p class="text-xs text-slate-400">New challenges unlock every midnight • <a href="#" class="text-emerald-600 hover:underline font-semibold">View History</a></p>
-    </div>
-
-  </div>
-
+</div>
 
                
                <!--============ End =========-->
