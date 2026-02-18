@@ -39,7 +39,6 @@ async function loadProfile(token) {
             document.getElementById("avatar").innerText = data.profile.username.charAt(0).toUpperCase();
             document.getElementById("Pavatar").innerText = data.profile.username.charAt(0).toUpperCase();
             
-            // Co2 per kg and tree planted
             
             // ✅ Environmental Impact
            
@@ -50,6 +49,10 @@ async function loadProfile(token) {
             document.getElementById("pPoints").innerText = points;
             document.getElementById("hPoints").innerText = points;
             document.getElementById("aPoints").innerText = points;
+            
+                // 👉 DYNAMICALLY LOCK/UNLOCK CARDS BASED ON POINTS
+    updateRewardsUI(points);
+        
             document.getElementById("uBadge").innerText = calculateBadge(points);
             document.getElementById("uBadge").innerText = calculateBadge(points);
             document.getElementById("badge-bg").style.backgroundColor = getBadgeColor(points);
@@ -66,9 +69,6 @@ async function loadProfile(token) {
             
             document.getElementById("levelName").innerText = "Level " + level +": Eco Warrior";
             
-            
-            
-            
             const progressbar = calculateLevelPercentage(points);
             
             document.getElementById("levelPercent").innerText = progressbar + "%";
@@ -76,17 +76,6 @@ async function loadProfile(token) {
             document.getElementById("levelPer").innerText = progressbar + "%";
             
             document.getElementById("progressbar-style").style.width = progressbar + "%";
-            
-            
-            
-            // progress bar
-          /*  document.getElementById("levelName").innerText = "Level " + progressbar.levelprogress + ": Eco Warrior";
-
-            // Update percent text
-            document.getElementById("levelPercent").innerText = progressbar.levelpercent + "%";
-
-            // Update progress bar
-            document.getElementById("levelBar").style.width = progressbar.levelpercent + "%";*/
             
             // Populate Table
             renderHistory(data.history);
@@ -101,17 +90,6 @@ async function loadProfile(token) {
 
 /* ================= REPORTING LOGIC ================= */
 
-// 1. Get Location
-/*function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            document.getElementById("lat").value = position.coords.latitude;
-            document.getElementById("lng").value = position.coords.longitude;
-        }, () => { alert("Location access denied."); });
-    } else {
-        alert("Geolocation not supported by this browser.");
-    }
-}*/
 function getLocation() {
             const btn = document.querySelector('button[onclick="getLocation()"]');
             const originalText = btn.innerHTML;
@@ -135,9 +113,6 @@ function getLocation() {
                 btn.innerHTML = originalText;
             }
         }
-
-
-
 
 // 2. Convert Image to Base64
 const toBase64 = file => new Promise((resolve, reject) => {
@@ -234,16 +209,6 @@ function calculateLevel(points) {
     return 3; // max level capped
 }
 
-/*function calculateLevelPercentage(points) {
-    const progress = points % 200;
-    return ((progress / 200) * 100).toFixed(2);
-}
-
-function calculateLevel(points) {
-    return Math.floor(points / 200) + 1;
-}
-*/
-
 
 function calculateImpact(points) {
     const CO2_PER_POINT = 0.5;   // kg CO₂ saved per point
@@ -258,16 +223,6 @@ function calculateImpact(points) {
     };
 }
 
-
-
-
-
-
-/*function calculateImpact(points) {
-    const co2 = points / 10;      // 10 points = 1kg CO2
-    const trees = co2 / 21;       // 1 tree = 21kg CO2
-    return { co2, trees };
-}*/
 
 function calculateBadge(points) {
     if (points >= 500) return "Gold";
@@ -318,4 +273,136 @@ function logout() {
                 localStorage.clear();
                 location.href = "login.html";
             }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ================= REWARDS UI & LOGIC ================= */
+
+function updateRewardsUI(userPoints) {
+    const cards = document.querySelectorAll('.reward-card');
+    
+    cards.forEach(card => {
+        const cost = parseInt(card.getAttribute('data-cost'));
+        const btn = card.querySelector('.redeem-btn');
+        const title = btn.getAttribute('data-title');
+        const code = btn.getAttribute('data-code');
+
+        if (userPoints >= cost) {
+            // UNLOCKED STATE
+            card.classList.remove('grayscale', 'opacity-60', 'cursor-not-allowed');
+            card.classList.add('hover:shadow-lg', 'hover:-translate-y-1');
+            
+            btn.disabled = false;
+            btn.innerHTML = 'Redeem <i data-lucide="chevron-right" class="w-3 h-3"></i>';
+            btn.classList.remove('bg-slate-200', 'text-slate-500', 'cursor-not-allowed');
+            btn.classList.add('bg-slate-900', 'text-white', 'hover:bg-emerald-600', 'cursor-pointer');
+            
+            // Assign click event
+            btn.onclick = () => openCoupon(title, code);
+        } else {
+            // LOCKED STATE (Grayed out)
+            card.classList.add('grayscale', 'opacity-60');
+            card.classList.remove('hover:shadow-lg', 'hover:-translate-y-1');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="lock" class="w-3 h-3"></i> Locked';
+            btn.classList.add('bg-slate-200', 'text-slate-500', 'cursor-not-allowed');
+            btn.classList.remove('bg-slate-900', 'text-white', 'hover:bg-emerald-600', 'cursor-pointer');
+            btn.onclick = null;
+        }
+    });
+
+    // Re-initialize Lucide icons dynamically
+    if(window.lucide) { lucide.createIcons(); }
+}
+
+// Initialize Tabs
+document.addEventListener("DOMContentLoaded", () => {
+    if(window.lucide) { lucide.createIcons(); }
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const rewardCards = document.querySelectorAll('.reward-card');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Reset colors
+            tabBtns.forEach(b => {
+                b.classList.remove('bg-slate-900', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            // Make active
+            btn.classList.remove('bg-slate-100', 'text-slate-600');
+            btn.classList.add('bg-slate-900', 'text-white');
+
+            const target = btn.getAttribute('data-target');
+
+            // Filter
+            rewardCards.forEach(card => {
+                if (target === 'all' || card.getAttribute('data-level') === target) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
+// Modal & Copy Coupon Logic
+let modal, modalTitle, couponCodeText, copyBtn;
+
+document.addEventListener("DOMContentLoaded", () => {
+    modal = document.getElementById('coupon-modal');
+    modalTitle = document.getElementById('modal-title');
+    couponCodeText = document.getElementById('coupon-code');
+    copyBtn = document.getElementById('copy-btn');
+
+    // Close modal if clicked outside
+    if(modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCoupon();
+        });
+    }
+});
+
+function openCoupon(title, code) {
+    if(!modal) return;
+    modalTitle.textContent = title;
+    couponCodeText.textContent = code;
+    copyBtn.innerHTML = `<i data-lucide="copy" class="w-5 h-5"></i> Copy Code`;
+    if(window.lucide) lucide.createIcons();
+    modal.classList.remove('hidden');
+}
+
+function closeCoupon() {
+    if(modal) modal.classList.add('hidden');
+}
+
+function copyCoupon() {
+    const textToCopy = couponCodeText.textContent;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        copyBtn.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Copied!`;
+        if(window.lucide) lucide.createIcons();
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = `<i data-lucide="copy" class="w-5 h-5"></i> Copy Code`;
+            if(window.lucide) lucide.createIcons();
+        }, 2000);
+    }).catch(err => {
+        alert("Copy failed. Please manually copy the code.");
+    });
 }
