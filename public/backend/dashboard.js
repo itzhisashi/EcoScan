@@ -91,6 +91,31 @@ async function loadProfile(token) {
 
 /* ================= REPORTING LOGIC ================= */
 
+// 1. Show Image Preview when file is selected
+document.getElementById('wasteImg').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('reportImgPreview');
+            const placeholder = document.getElementById('reportImgPlaceholder');
+            const containerBox = document.getElementById('imageContainerBox');
+            
+            // Set image source and show it
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            
+            // Hide the text/icon placeholder
+            placeholder.classList.add('hidden');
+
+            // Style the container so it looks clean with the new image
+            containerBox.classList.remove('border-dashed', 'border-2', 'bg-slate-50');
+            containerBox.classList.add('border', 'bg-black/5');
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
 function getLocation() {
             const btn = document.querySelector('button[onclick="getLocation()"]');
             const originalText = btn.innerHTML;
@@ -276,8 +301,6 @@ function logout() {
             }
 }
 
-
-
 /* ================= REWARDS UI & LOGIC ================= */
 
 function updateRewardsUI(userPoints) {
@@ -394,8 +417,6 @@ function copyCoupon() {
         alert("Copy failed. Please manually copy the code.");
     });
 }
-
-/* ============================== Edit Profile / Setting ============================ */
 
 /* ================= SETTINGS & PROFILE UPDATES ================= */
 
@@ -553,9 +574,6 @@ async function verifyEmailOTP() {
         btn.innerHTML = 'Verify & Update Email';
     }
 }
-
-
-
 
 
 /* ================= DAILY CHALLENGES & STREAKS ================= */
