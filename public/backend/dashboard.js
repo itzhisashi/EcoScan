@@ -79,6 +79,7 @@ async function loadProfile(token) {
             
             // Populate Table
             renderHistory(data.history);
+            renderChallengeUI(data.profile);
         } else {
             alert("Session expired");
             logout();
@@ -550,5 +551,146 @@ async function verifyEmailOTP() {
         msg.innerText = "Connection error.";
         btn.disabled = false;
         btn.innerHTML = 'Verify & Update Email';
+    }
+}
+
+
+
+
+
+/* ================= DAILY CHALLENGES & STREAKS ================= */
+
+function renderChallengeUI(profile) {
+    // 1. Calculate Days Left in Month
+    const now = new Date();
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const daysLeft = lastDayOfMonth.getDate() - now.getDate();
+    document.getElementById("daysLeftText").innerText = daysLeft + " Days Left";
+
+    // 2. Update Monthly Progress
+    const actions = profile.monthlyActions || 0;
+    const maxActions = 25;
+    const percent = Math.min(Math.round((actions / maxActions) * 100), 100);
+    document.getElementById("monthlyActionsText").innerText = `${actions} / ${maxActions} Actions`;
+    document.getElementById("monthlyPercentText").innerText = `${percent}% Complete`;
+    document.getElementById("monthlyProgressBar").style.width = `${percent}%`;
+
+    // 3. Render Streak UI
+    const streak = profile.streak || 0;
+    document.getElementById("streakCount").innerText = streak;
+
+    // Check if claimed today
+    let claimedToday = false;
+    if (profile.lastClaim) {
+        const last = new Date(profile.lastClaim);
+        if (last.toDateString() === now.toDateString()) {
+            claimedToday = true;
+        }
+    }
+
+    // Update Button State
+    const btn = document.getElementById("claimStreakBtn");
+    if (claimedToday) {
+        btn.disabled = true;
+        btn.innerHTML = 'Claimed <i data-lucide="check" class="w-4 h-4"></i>';
+        btn.classList.replace('bg-emerald-50', 'bg-slate-100');
+        btn.classList.replace('text-emerald-600', 'text-slate-500');
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = 'Claim Now <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>';
+    }
+
+    // 4. Build Streak Cards Dynamically
+    const container = document.getElementById("streakCardsContainer");
+    container.innerHTML = "";
+
+    const streakData = [
+        { day: 1, pts: 20 },
+        { day: 2, pts: 50 },
+        { day: 3, pts: 100 }
+    ];
+
+    streakData.forEach((s, index) => {
+        // Active logic: If claimed today, show up to current streak as active.
+        // If not claimed today, the NEXT day in the sequence should be highlighted.
+        let isActive = false;
+        let isPast = false;
+
+        if (claimedToday) {
+            if (s.day === streak || (streak > 3 && s.day === 3)) isActive = true;
+            else if (s.day < streak) isPast = true;
+        } else {
+            if (s.day === streak + 1 || (streak >= 3 && s.day === 3)) isActive = true;
+            else if (s.day <= streak) isPast = true;
+        }
+
+        let html = "";
+        if (isActive) {
+            // Highlighted / Next to claim
+            html = `
+            <div class="relative group cursor-pointer">
+              <div class="bg-gradient-to-b from-emerald-50 to-white border-2 border-emerald-500 rounded-2xl p-4 text-center transition-transform hover:scale-[1.02] shadow-md shadow-emerald-100">
+                ${claimedToday ? `
+                <span class="absolute -top-2 -right-2 flex h-5 w-5">
+                  <span class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] text-white">✓</span>
+                </span>` : `
+                <span class="absolute -top-2 -right-2 flex h-5 w-5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] text-white">!</span>
+                </span>
+                `}
+                <div class="text-emerald-600 text-xl font-black">+${s.pts}</div>
+                <p class="text-[10px] font-bold text-slate-500 uppercase mt-1 tracking-tighter">Day ${streak > 3 && s.day === 3 ? streak + (claimedToday ? 0 : 1) : s.day}</p>
+              </div>
+            </div>`;
+        } else if (isPast) {
+            // Already claimed past days
+            html = `
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center opacity-80">
+              <div class="absolute -top-2 -right-2 h-5 w-5 bg-emerald-500 rounded-full flex items-center justify-center text-[10px] text-white">✓</div>
+              <div class="text-xl text-emerald-600 font-bold">+${s.pts}</div>
+              <p class="text-[10px] font-bold text-emerald-600/70 uppercase mt-1 tracking-tighter">Day ${s.day}</p>
+            </div>`;
+        } else {
+            // Future days
+            html = `
+            <div class="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-4 text-center opacity-60">
+              <div class="text-xl grayscale opacity-50 text-slate-400 font-bold">+${s.pts}</div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tighter">Day ${streak > 3 && s.day === 3 ? streak + 1 : s.day}</p>
+            </div>`;
+        }
+        container.innerHTML += html;
+    });
+
+    if(window.lucide) lucide.createIcons();
+}
+
+async function claimDailyStreak() {
+    const token = localStorage.getItem("token");
+    const btn = document.getElementById("claimStreakBtn");
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Claiming...';
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "claim_streak", token: token })
+        });
+        const data = await res.json();
+
+        if (data.status === "success") {
+            alert(data.message);
+            // Refresh the page to sync all points, badges, and progress bars
+            location.reload(); 
+        } else {
+            alert(data.message);
+            btn.disabled = false;
+            btn.innerHTML = 'Claim Now';
+        }
+    } catch (e) {
+        alert("Connection error.");
+        btn.disabled = false;
+        btn.innerHTML = 'Claim Now';
     }
 }
