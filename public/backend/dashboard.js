@@ -277,19 +277,6 @@ function logout() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ================= REWARDS UI & LOGIC ================= */
 
 function updateRewardsUI(userPoints) {
