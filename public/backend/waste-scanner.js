@@ -129,3 +129,4 @@
                 loading.classList.add('hidden');
             }
         }
+
