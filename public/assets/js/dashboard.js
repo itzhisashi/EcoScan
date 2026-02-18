@@ -18,7 +18,8 @@
      'map': 'Find Recycling Centers',
      'rewards': 'Rewards Store',
      'profile': 'My Profile',
-     'report': 'Report Waste'
+     'report': 'Report Waste',
+     'challenge': 'Daily Challenge'
    };
    document.getElementById('page-title').innerText = titles[tabId];
    
