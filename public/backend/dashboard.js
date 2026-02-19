@@ -293,12 +293,39 @@ function renderHistory(reports) {
     });
 }
 
-function logout() {
+/*function logout() {
     if(confirm("Are you sure you want to log out?")) {
                 alert("Logging out...");
                 localStorage.clear();
                 location.href = "login.html";
             }
+}*/
+
+// 1. Function called by your original Logout button
+function logout() {
+    const modal = document.getElementById('logoutModal');
+    modal.classList.remove('hidden'); // Show modal
+}
+
+// 2. Function to hide the modal if they click "Cancel"
+function closeLogoutModal() {
+    const modal = document.getElementById('logoutModal');
+    modal.classList.add('hidden'); // Hide modal
+}
+
+// 3. The actual logout process
+function confirmLogout() {
+    // Optional: Show a loading state on the button
+    const btn = event.target;
+    btn.innerText = "Logging out...";
+    btn.disabled = true;
+
+    localStorage.clear();
+    
+    // Small delay for a smoother feel
+    setTimeout(() => {
+        window.location.href = "login.html";
+    }, 800);
 }
 
 /* ================= REWARDS UI & LOGIC ================= */
