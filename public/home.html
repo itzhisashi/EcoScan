@@ -78,13 +78,24 @@
                     </button>
                 </div>
 
-                <div class="md:hidden flex items-center">
-                    <button class="text-slate-600 hover:text-emerald-600 focus:outline-none">
-                        <i data-lucide="menu" class="w-7 h-7"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+                <!-- Mobile Menu Button -->
+             <div class="md:hidden flex items-center">
+                 <button id="mobile-menu-btn" class="text-slate-600 hover:text-emerald-600 focus:outline-none">
+                     <i data-lucide="menu" class="w-7 h-7"></i>
+                 </button>
+             </div>
+         </div>
+     </div>
+     
+     <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-emerald-100 absolute w-full animate-fadeIn">
+         <div class="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+             <button onclick="location.href='index.html';" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Home</button>
+             <button onclick="location.href='dashboard.html';" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Dashboard</button>
+             <button onclick="location.href='#tools';" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Tools</button>
+             <button onclick="logout()" class="block w-full text-left px-4 py-3 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg font-medium">Logout</button>
+         </div>
+    </div>
     </nav>
 
     <section id="home" class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
