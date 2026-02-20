@@ -415,6 +415,7 @@
 
 
         <script>
+            lucide.createIcons();
         // 1. Initialize Map centered on Nagpur
         var map = L.map('map').setView([21.1458, 79.0882], 12);
 
@@ -565,12 +566,38 @@
         map.locate({setView: true, maxZoom: 11});
         map.on('locationfound', onLocationFound);
 
+        function scrollToSection(id) {
+  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  document.getElementById("mobileMenu").classList.add("hidden");
+}
+
+function toggleMenu() {
+  document.getElementById("mobileMenu").classList.toggle("hidden");
+}
+
+
+ // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
     </script>
     
-    <script>
-        // Initialize Icons
-        lucide.createIcons();
-    </script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>
