@@ -276,6 +276,12 @@ function renderHistory(reports) {
         
         const isResolved = r.status === "Resolved";
 
+        const statusPoints = isResolved ? `+${r.points}` : "--";
+
+        const pointsStyle = isResolved 
+             ? "text-brand-600 font-bold bg-brand-50 px-2 py-1 rounded-lg group-hover:bg-brand-100 transition-colors"
+             : "text-slate-300 font-bold px-2 py-1";
+
         const statusClasses = isResolved
             ? "bg-emerald-100 text-emerald-700 border-emerald-200"
             : "bg-yellow-100 text-yellow-700 border-yellow-200 animate-pulse";
@@ -286,7 +292,7 @@ function renderHistory(reports) {
                 <td class="px-6 py-4 font-medium text-gray-800">${r.type}</td>
                 <td class="px-6 py-4">
                     <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClasses} border"><span class="status-badge status-${r.status}">${r.status}</span></td>
-                <td class="px-6 py-4 text-gray-600 font-bold">&plus;${r.points}</td>
+                <td class="px-6 py-4 text-gray-600 font-bold"><span class="${pointsStyle}">${statusPoints}</span></td>
             </tr>
         `;
         tbody.innerHTML += row;
