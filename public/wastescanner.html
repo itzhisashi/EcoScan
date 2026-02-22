@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Waste Recycler</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Smooth scrolling for the whole page */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-green-50 font-sans text-slate-800 min-h-screen py-10 px-4">
+<!---->
+    <div class="max-w-2xl mx-auto">
+        
+         <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800">AI Waste Identification</h2>
+                    <p class="text-slate-500 mt-2">Upload a photo or use your camera to identify materials and value.</p>
+                </div>
+               
+                <!-- AI scanner -->
+                
+                <div class="max-w-2xl mx-auto">
+        
+        <div class="bg-white rounded-3xl shadow-lg p-1">
+            <div class="upload-box relative group border-2 border-dashed border-green-400 rounded-2xl p-10 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300" onclick="document.getElementById('fileInput').click()">
+                
+               <center> <div class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-brand-500 mb-4 group-hover:text-brand-600 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div></center>
+                
+                <p class="font-bold text-lg text-slate-700 group-hover:text-green-700 transition-colors">Click to Upload Waste Photo</p>
+                <p class="text-sm text-slate-400 mt-1">Supports JPG, PNG</p>
+                
+                <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="previewImage(event)">
+                <img id="preview" class="mt-6 mx-auto max-h-64 rounded-lg shadow-md hidden object-cover" />
+            </div>
+        </div>
+
+        <button id="scanBtn" onclick="scanWaste()" disabled 
+            class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-lg py-4 px-6 rounded-2xl mt-6 shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-600 hover:-translate-y-1 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none">
+            Analyze & Find Centers
+        </button>
+
+        <div id="loading" class="hidden mt-8 text-center">
+            <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-green-600 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                AI is analyzing waste & matching centers...
+            </div>
+        </div>
+
+        <div id="result" class="hidden mt-10 animate-fade-in-up">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+                
+                <div class="bg-green-50/50 p-6 border-b border-green-100">
+                    <h2 id="wasteType" class="text-3xl font-bold text-green-900 capitalize mb-1">Plastic</h2>
+                    <p class="text-sm text-green-700 font-medium flex items-center gap-2">
+                        <span class="flex items-center"><i class="h-4 w-4 mr-2" data-lucide="hand-coins"></i>Est. Value:</span>
+                        <span id="value" class="bg-green-200 text-green-800 px-2 py-0.5 rounded text-xs uppercase tracking-wide font-bold">-</span>
+                    </p>
+                </div>
+                
+                <div class="p-6 space-y-8">
+                    
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between font-bold text-sm text-slate-600 mb-2">
+                            <span>Recyclability Score</span>
+                            <span id="scoreText" class="text-green-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="scoreBar" class="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out w-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-4 border-l-4 border-orange-400 bg-orange-50 rounded-r-xl p-5">
+                        <h3 class="font-bold text-orange-800 mb-3 text-lg flex items-center"><i class="w-4 h-4 mr-3" data-lucide="notebook-pen"></i> Preparation Steps:</h3>
+                        <ul id="steps" class="space-y-2 text-orange-900/80 list-disc list-inside">
+                            </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="flex items-center text-xl font-bold text-slate-800 mb-4">
+                            <i data-lucide="map-pin" class="h-5 w-5 mr-3"></i>Nearby Centers 
+                            <span id="centerCount" class="ml-3 bg-slate-800 text-white text-xs px-2 py-1 rounded-full">0</span>
+                        </h3>
+                        
+                        <ul id="centersList" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div><!---->
+    </div><!---->
+    </div>
+
+    <script>
+        // ⚠️ REPLACE THIS URL WITH YOUR GOOGLE SCRIPT DEPLOYMENT URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiZEriu06P5OxWu-_VstAm1d1xqo4_gBPnkWvvkCIdCHIrWvwgXDCZm5NLf7XFbPwT/exec';
+        
+        let base64String = "";
+
+        // Preview the uploaded image
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('preview');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden'); // Show image using Tailwind
+                    base64String = e.target.result.split(',')[1];
+                    
+                    // Enable button
+                    const btn = document.getElementById('scanBtn');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    
+                    // Hide old results
+                    document.getElementById('result').classList.add('hidden'); 
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function scanWaste() {
+            const btn = document.getElementById('scanBtn');
+            const loading = document.getElementById('loading');
+            const resultBox = document.getElementById('result');
+            
+            // UI State: Loading
+            btn.disabled = true;
+            btn.innerHTML = "Processing...";
+            loading.classList.remove('hidden');
+            resultBox.classList.add('hidden');
+
+            try {
+                // Send to Backend
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ image: base64String })
+                });
+
+                const json = await response.json();
+
+                if (json.status === 'success') {
+                    const data = json.data;
+
+                    // --- 1. Populate Basic Data ---
+                    document.getElementById('wasteType').innerText = data.wasteType;
+                    document.getElementById('value').innerText = data.estimatedValue;
+                    
+                    // --- 2. Animate Score Bar ---
+                    const score = data.recyclabilityScore;
+                    const bar = document.getElementById('scoreBar');
+                    document.getElementById('scoreText').innerText = score + "/100";
+                    
+                    // Color Logic (Tailwind classes would be dynamic, but inline style works best for variable width/color here)
+                    let barColor = "#22c55e"; // Green-500
+                    if(score < 40) barColor = "#ef4444"; // Red-500
+                    else if(score < 75) barColor = "#eab308"; // Yellow-500
+                    
+                    bar.style.backgroundColor = barColor;
+                    
+                    // Trigger animation
+                    setTimeout(() => { bar.style.width = score + "%"; }, 100);
+
+                    // --- 3. Populate Steps (With Tailwind Classes) ---
+                    const stepsList = document.getElementById('steps');
+                    stepsList.innerHTML = ''; 
+                    data.recyclingSteps.forEach(step => {
+                        stepsList.innerHTML += `<li class="marker:text-orange-400">${step}</li>`;
+                    });
+
+                    // --- 4. Populate Centers List (With Tailwind Classes) ---
+                    const centersList = document.getElementById('centersList');
+                    const centerCount = document.getElementById('centerCount');
+                    centersList.innerHTML = ''; 
+                    
+                    if (data.centers && data.centers.length > 0) {
+                        centerCount.innerText = data.centers.length;
+                        
+                        data.centers.forEach(center => {
+                            // JS creates HTML string with Tailwind classes
+                            const li = document.createElement('li');
+                            li.className = 'group bg-white border border-slate-200 p-4 rounded-xl hover:border-green-500 hover:shadow-md hover:-translate-y-1 transition-all duration-200 relative overflow-hidden';
+                            li.innerHTML = `
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-xl"></div>
+                                <div class="pl-2">
+                                    <span class="font-bold text-slate-800 text-lg block group-hover:text-green-700 transition-colors">${center.name}</span>
+                                    <div class="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                                        <span>📍 ${center.address || 'Nagpur, Maharashtra'}</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded uppercase font-bold tracking-wider">${center.type}</span>
+                                        <a href="tel:${center.phone}" class="bg-green-50 text-green-700 text-sm font-bold px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors flex items-center gap-1">
+                                            📞 Call
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            centersList.appendChild(li);
+                        });
+                    } else {
+                        centerCount.innerText = "0";
+                        centersList.innerHTML = `
+                            <li class="text-center text-slate-400 py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                No specific centers found for this waste type.
+                            </li>`;
+                    }
+
+                    // Show Results
+                    loading.classList.add('hidden');
+                    resultBox.classList.remove('hidden');
+                    resultBox.scrollIntoView({ behavior: 'smooth' });
+
+                } else {
+                    alert('Server Error: ' + json.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Connection Failed.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Analyze & Find Centers";
+                loading.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
