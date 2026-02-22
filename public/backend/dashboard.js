@@ -21,6 +21,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyZ4HRHejxZmhObT8GqMDGp
 
     // 2. Fetch User Profile & Reports
     loadProfile(token);
+    
+    window.addEventListener('focus', () => {
+        console.log("User returned to tab, fetching fresh data...");
+        loadProfile(token);
+    });
+    
 })();
 
 async function loadProfile(token) {
