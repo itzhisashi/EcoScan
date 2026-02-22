@@ -660,8 +660,10 @@ function renderChallengeUI(profile) {
     const maxActions = 25;
     const percent = Math.min(Math.round((actions / maxActions) * 100), 100);
     document.getElementById("monthlyActionsText").innerText = `${actions} / ${maxActions} Actions`;
+    document.getElementById("overviewMonthly").innerText = `${actions} / ${maxActions} Completed`;
     document.getElementById("monthlyPercentText").innerText = `${percent}% Complete`;
     document.getElementById("monthlyProgressBar").style.width = `${percent}%`;
+    document.getElementById("overviewMonthlyStyle").style.width =`${percent}%`;
 
     // 3. Render Streak UI
     const streak = profile.streak || 0;
