@@ -50,7 +50,7 @@
                     const data = json.data;
 
                     // --- 1. Populate Basic Data ---
-                    document.getElementById('wasteType').innerText = data.wasteType;
+                    document.getElementById('wasteType2').innerText = data.wasteType;
                     document.getElementById('value').innerText = data.estimatedValue;
                     
                     // --- 2. Animate Score Bar ---
@@ -129,4 +129,5 @@
                 loading.classList.add('hidden');
             }
         }
+
 
