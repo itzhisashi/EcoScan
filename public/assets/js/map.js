@@ -180,6 +180,9 @@
       if (type === 'ewaste') color = 'purple';
       if (type === 'plastic') color = 'blue';
       if (type === 'metal') color = 'orange';
+      if (type === 'paper') color = 'green';
+      if (type === 'glass') color = 'teal';
+      if (type === 'scrap') color = 'red';
       
       return L.divIcon({
           className: 'custom-pin',

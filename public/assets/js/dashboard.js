@@ -579,6 +579,8 @@
             if(type === 'plastic') { color = 'blue'; iconName = 'milk'; }
             if(type === 'metal') { color = 'orange'; iconName = 'wrench'; }
             if(type === 'paper') { color = 'green'; iconName = 'file-text'; }
+            if(type === 'glass') { color = 'teal'; iconName = 'bottle-wine'; }
+            if(type === 'scrap') { color = 'red'; iconName = 'cog'; }
             
             const html = `
                 <div class="relative w-10 h-10 flex items-center justify-center bg-white rounded-full border-4 border-${color}-500 shadow-lg transform hover:scale-110 transition-transform">
