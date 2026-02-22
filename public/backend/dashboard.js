@@ -189,9 +189,40 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
         });
         const data = await res.json();
 
+        // if (data.status === "success") {
+        //     alert(`Report Submitted! Points will be awarded once verified.`);
+        //     location.reload(); // Refresh to show new points
+        // } else {
+        //     alert("Error: " + data.message);
+        // }
+
         if (data.status === "success") {
             alert(`Report Submitted! Points will be awarded once verified.`);
-            location.reload(); // Refresh to show new points
+            
+            // 1. Reset the text inputs and dropdowns
+            document.getElementById("reportForm").reset();
+            
+            // 2. Reset the Image Preview UI
+            const preview = document.getElementById('reportImgPreview');
+            const placeholder = document.getElementById('reportImgPlaceholder');
+            const containerBox = document.getElementById('imageContainerBox');
+            
+            if(preview) {
+                preview.src = "";
+                preview.classList.add('hidden');
+            }
+            if(placeholder) placeholder.classList.remove('hidden');
+            if(containerBox) {
+                containerBox.classList.add('border-dashed', 'border-2', 'bg-slate-50');
+                containerBox.classList.remove('border', 'bg-black/5');
+            }
+
+            // 3. SILENTLY UPDATE DATA (No page reload)
+            loadProfile(token); 
+            
+            // Optional: Switch to profile tab to see history
+            // switchTab('profile'); 
+            
         } else {
             alert("Error: " + data.message);
         }
@@ -730,15 +761,30 @@ async function claimDailyStreak() {
         });
         const data = await res.json();
 
+        // if (data.status === "success") {
+        //     alert(data.message);
+        //     // Refresh the page to sync all points, badges, and progress bars
+        //     location.reload(); 
+        // } else {
+        //     alert(data.message);
+        //     btn.disabled = false;
+        //     btn.innerHTML = 'Claim Now';
+        // }
+
         if (data.status === "success") {
             alert(data.message);
-            // Refresh the page to sync all points, badges, and progress bars
-            location.reload(); 
+            
+            // SILENTLY UPDATE DATA (No page reload)
+            loadProfile(token); 
+            
         } else {
             alert(data.message);
             btn.disabled = false;
             btn.innerHTML = 'Claim Now';
         }
+
+
+        
     } catch (e) {
         alert("Connection error.");
         btn.disabled = false;
