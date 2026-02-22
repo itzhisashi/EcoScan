@@ -190,7 +190,7 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
         const data = await res.json();
 
         if (data.status === "success") {
-            alert(`Report Submitted! You earned ${data.points} Eco-Points.`);
+            alert(`Report Submitted! Points will be awarded once verified.`);
             location.reload(); // Refresh to show new points
         } else {
             alert("Error: " + data.message);
