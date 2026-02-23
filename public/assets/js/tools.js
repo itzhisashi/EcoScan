@@ -1,21 +1,25 @@
 
 // Function to Open Modal and Inject Content
-        function openModal(toolId) {
-            const modal = document.getElementById('toolModal');
-            const modalBody = document.getElementById('modal-body-content');
-            
-            // Find the content div based on the ID passed
-            const sourceContent = document.getElementById(toolId + '-content');
-            
-            if (sourceContent) {
-                // Inject the HTML from the hidden div into the modal
-                modalBody.innerHTML = sourceContent.innerHTML;
-                // Show the modal
-                modal.classList.remove('hidden');
-                document.body.classList.add("no-scroll");
-            } else {
-                console.error('No content found for tool: ' + toolId);
-            }
+  function openModal(toolId) {
+    const modal = document.getElementById('toolModal');
+    const modalBody = document.getElementById('modal-body-content');
+    const sourceContent = document.getElementById(toolId + '-content');
+    
+    if (sourceContent) {
+        // 1. Inject content
+        modalBody.innerHTML = sourceContent.innerHTML;
+        
+        // 2. Show modal
+        modal.classList.remove('hidden');
+        document.body.classList.add("no-scroll");
+
+        // 3. IMPORTANT: Re-initialize icons inside the modal
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    } else {
+        console.error('No content found for tool: ' + toolId);
+    }
         }
 
         // Function to Close Modal
