@@ -62,7 +62,7 @@
                 <p class="font-bold text-lg text-slate-700 group-hover:text-green-700 transition-colors">Click to Upload Waste Photo</p>
                 <p class="text-sm text-slate-400 mt-1">Supports JPG, PNG</p>
                 
-                <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="previewImage(event)">
+                <input type="file" id="fileInput" capture="environment" accept="image/*" class="hidden" onchange="previewImage(event)">
                 <img id="preview" class="mt-6 mx-auto max-h-64 rounded-lg shadow-md hidden object-cover" />
             </div>
         </div>
@@ -264,6 +264,7 @@
 </body>
 
 </html>
+
 
 
 
