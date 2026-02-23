@@ -515,110 +515,94 @@
 
             <div id="section-scanner" class="tab-content hidden animate-fadeIn space-y-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-slate-800">AI Waste Identification</h2>
-                    <p class="text-slate-500 mt-2">Upload a photo or use your camera to identify materials and value.
-                    </p>
+                <h2 class="text-3xl font-bold text-slate-800">AI Waste Identification</h2>
+                <p class="text-slate-500 mt-2">Upload a photo or use your camera to identify materials.</p>
                 </div>
 
                 <!-- AI scanner -->
 
                 <div class="max-w-2xl mx-auto">
 
-                    <div class="bg-white rounded-3xl shadow-lg p-1">
-                        <div class="upload-box relative group border-2 border-dashed border-green-400 rounded-2xl p-10 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300"
-                            onclick="document.getElementById('fileInput').click()">
+                   <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <div id="cameraCard" onclick="triggerCamera()" class="flex-1 bg-white border-2 border-dashed border-green-400 rounded-3xl p-8 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300 group">
+                <div class="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i data-lucide="camera" class="w-8 h-8 text-green-500"></i>
+                </div>
+                <h3 class="font-bold text-lg text-slate-700">Take Photo</h3>
+                <p class="text-sm text-slate-400">Use your device camera</p>
+            </div>
 
-                            <center>
-                                <div
-                                    class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-brand-500 mb-4 group-hover:text-brand-600 group-hover:scale-110 transition-transform duration-300">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                                        </path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                </div>
-                            </center>
+            <div id="galleryCard" onclick="triggerGallery()" class="flex-1 bg-white border-2 border-dashed border-green-400 rounded-3xl p-8 text-center cursor-pointer hover:bg-green-50 hover:border-green-600 transition-all duration-300 group">
+                <div class="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i data-lucide="image" class="w-8 h-8 text-green-500"></i>
+                </div>
+                <h3 class="font-bold text-lg text-slate-700">Media Gallery</h3>
+                <p class="text-sm text-slate-400">Select from Storage</p>
+            </div>
+        </div>
 
-                            <p class="font-bold text-lg text-slate-700 group-hover:text-green-700 transition-colors">
-                                Click to Upload Waste Photo</p>
-                            <p class="text-sm text-slate-400 mt-1">Supports JPG, PNG</p>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(event, 'camera')">
+        <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'gallery')">
 
-                            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="previewImage(event)">
-                            <img id="preview" class="mt-6 mx-auto max-h-64 rounded-lg shadow-md hidden object-cover" />
+        <div id="previewContainer" class="hidden mb-6 bg-white p-4 rounded-3xl shadow-lg border border-green-100 animate-fade-in-up relative">
+            <button onclick="resetUI()" class="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition-colors transition-all duration-300 hover:scale-110 transition-transform">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            <img id="preview" class="w-full max-h-72 object-cover rounded-2xl" />
+        </div>
+
+        <button id="scanBtn" onclick="scanWaste()" disabled 
+            class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-lg py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+            Analyze & Find Centers
+        </button>
+
+        <div id="loading" class="hidden mt-8 text-center">
+            <div class="inline-flex items-center px-4 py-2 font-semibold text-green-600">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                AI is analyzing waste & matching centers...
+            </div>
+        </div>
+
+        <div id="result" class="hidden mt-10 animate-fade-in-up">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+                <div class="bg-green-50/50 p-6 border-b border-green-100">
+                    <h2 id="wasteType" class="text-3xl font-bold text-green-900 capitalize mb-1">Plastic</h2>
+                    <p class="text-sm text-green-700 font-medium flex items-center gap-2">
+                        <i class="h-4 w-4" data-lucide="hand-coins"></i>Est. Value:
+                        <span id="value" class="bg-green-200 text-green-800 px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wide">-</span>
+                    </p>
+                </div>
+                
+                <div class="p-6 space-y-8">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between font-bold text-sm text-slate-600 mb-2">
+                            <span>Recyclability Score</span>
+                            <span id="scoreText" class="text-green-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="scoreBar" class="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out w-0"></div>
                         </div>
                     </div>
 
-                    <button id="scanBtn" onclick="scanWaste()" disabled
-                        class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-lg py-4 px-6 rounded-2xl mt-6 shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-600 hover:-translate-y-1 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none">
-                        Analyze & Find Centers
-                    </button>
-
-                    <div id="loading" class="hidden mt-8 text-center">
-                        <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-green-600 transition ease-in-out duration-150 cursor-not-allowed"
-                            disabled="">
-                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-600"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
-                            AI is analyzing waste & matching centers...
-                        </div>
+                    <div class="relative pl-4 border-l-4 border-orange-400 bg-orange-50 rounded-r-xl p-5">
+                        <h3 class="font-bold text-orange-800 mb-3 text-lg flex items-center"><i class="w-4 h-4 mr-3" data-lucide="notebook-pen"></i> Preparation Steps:</h3>
+                        <ul id="steps" class="space-y-2 text-orange-900/80 list-disc list-inside text-sm"></ul>
                     </div>
 
-                    <div id="result" class="hidden mt-10 animate-fade-in-up">
-                        <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-
-                            <div class="bg-green-50/50 p-6 border-b border-green-100">
-                                <h2 id="wasteType2" class="text-3xl font-bold text-green-900 capitalize mb-1">Plastic
-                                </h2>
-                                <p class="text-sm text-green-700 font-medium flex items-center gap-2">
-                                    <span class="flex items-center"><i class="h-4 w-4 mr-2"
-                                            data-lucide="hand-coins"></i>Est. Value:</span>
-                                    <span id="value"
-                                        class="bg-green-200 text-green-800 px-2 py-0.5 rounded text-xs uppercase tracking-wide font-bold">-</span>
-                                </p>
-                            </div>
-
-                            <div class="p-6 space-y-8">
-
-                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                                    <div class="flex justify-between font-bold text-sm text-slate-600 mb-2">
-                                        <span>Recyclability Score</span>
-                                        <span id="scoreText" class="text-green-600">0%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
-                                        <div id="scoreBar"
-                                            class="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out w-0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="relative pl-4 border-l-4 border-orange-400 bg-orange-50 rounded-r-xl p-5">
-                                    <h3 class="font-bold text-orange-800 mb-3 text-lg flex items-center"><i
-                                            class="w-4 h-4 mr-3" data-lucide="notebook-pen"></i> Preparation Steps:</h3>
-                                    <ul id="steps" class="space-y-2 text-orange-900/80 list-disc list-inside">
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <h3 class="flex items-center text-xl font-bold text-slate-800 mb-4">
-                                        <i data-lucide="map-pin" class="h-5 w-5 mr-3"></i>Nearby Centers
-                                        <span id="centerCount"
-                                            class="ml-3 bg-slate-800 text-white text-xs px-2 py-1 rounded-full">0</span>
-                                    </h3>
-
-                                    <ul id="centersList"
-                                        class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!---->
+                    <div>
+                        <h3 class="flex items-center text-xl font-bold text-slate-800 mb-4">
+                            <i data-lucide="map-pin" class="h-5 w-5 mr-3"></i>Nearby Centers 
+                            <span id="centerCount" class="ml-3 bg-slate-800 text-white text-xs px-2 py-1 rounded-full">0</span>
+                        </h3>
+                        <ul id="centersList" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+                   
                 </div>
                 <!-- End AI scanner -->
             </div>
