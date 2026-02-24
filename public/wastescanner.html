@@ -30,7 +30,36 @@
             }
         }
     </script>
-    <style>html { scroll-behavior: smooth; } .custom-scrollbar::-webkit-scrollbar { width: 5px; } .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }</style>
+    <style>html { scroll-behavior: smooth; } .custom-scrollbar::-webkit-scrollbar { width: 5px; } .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .credits {
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 15px;
+  text-align: right;
+  font-size: 13px;
+  color: #fff;
+  z-index: 999999;
+}
+
+/*@media (max-width: 992px) {*/
+  .credits {
+    text-align: center;
+    padding: 10px;
+    background: rgba(47, 179, 91, 0.9);
+  }
+/*}*/
+
+.credits a {
+  color: #fff;
+  transition: 0.3s;
+}
+
+.credits a:hover {
+  color: #d5ffe3;
+}
+    </style>
 </head>
 <body class="bg-green-50 font-sans text-slate-800 min-h-screen py-10 px-4">
 
@@ -121,6 +150,12 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <div class="credits">
+    Developed by <a href="https://amp.netlify.app/"><b>Ayush Patil</b></a> <i style="color:#" class="fa fa-leaf"></i>
+  </div>
+    </footer>
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz79z7rnN-7ttrjLzDadTbjbbrvMgcGYFYqESFWg2fHKEvUQXlF8PD4xGeuyTrMzrRkfw/exec';
