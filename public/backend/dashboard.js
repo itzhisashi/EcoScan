@@ -306,36 +306,49 @@ function renderHistory(reports) {
     tbody.innerHTML = "";
     
     // Sort by date (newest first)
-    
     reports.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     reports.forEach(r => {
         
         const isResolved = r.status === "Resolved";
+        const isRejected = r.status === "Rejected";
 
-        const statusPoints = isResolved ? `+${r.points}` : "--";
+        // Determine what to show in the points column
+        let statusPoints = "--";
+        if (isResolved) statusPoints = `+${r.points}`;
+        if (isRejected) statusPoints = "0";
 
-        const pointsStyle = isResolved 
-             ? "text-brand-600 font-bold bg-brand-50 px-2 py-1 rounded-lg group-hover:bg-brand-100 transition-colors"
-             : "text-slate-300 font-bold px-2 py-1";
+        // Determine the text style for the points
+        let pointsStyle = "text-slate-300 font-bold px-2 py-1"; // Pending
+        if (isResolved) {
+            pointsStyle = "text-brand-600 font-bold bg-brand-50 px-2 py-1 rounded-lg group-hover:bg-brand-100 transition-colors";
+        } else if (isRejected) {
+            pointsStyle = "text-red-500 font-bold px-2 py-1";
+        }
 
-        const statusClasses = isResolved
-            ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-            : "bg-yellow-100 text-yellow-700 border-yellow-200 animate-pulse";
+        // Determine the colors for the status badge
+        let statusClasses = "bg-yellow-100 text-yellow-700 border-yellow-200 animate-pulse"; // Pending
+        if (isResolved) {
+            statusClasses = "bg-emerald-100 text-emerald-700 border-emerald-200";
+        } else if (isRejected) {
+            statusClasses = "bg-red-100 text-red-700 border-red-200";
+        }
         
         const row = `
             <tr class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4 text-gray-700">${new Date(r.date).toLocaleDateString()}</td>
                 <td class="px-6 py-4 font-medium text-gray-800">${r.type}</td>
                 <td class="px-6 py-4">
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClasses} border"><span class="status-badge status-${r.status}">${r.status}</span></td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClasses} border">
+                        <span class="status-badge status-${r.status}">${r.status}</span>
+                    </span>
+                </td>
                 <td class="px-6 py-4 text-gray-600 font-bold"><span class="${pointsStyle}">${statusPoints}</span></td>
             </tr>
         `;
         tbody.innerHTML += row;
     });
 }
-
 /*function logout() {
     if(confirm("Are you sure you want to log out?")) {
                 alert("Logging out...");
