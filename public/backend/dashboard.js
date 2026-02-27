@@ -327,7 +327,7 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
         const payload = {
             action: "report_waste",
             token: token,
-            wasteType: document.getElementById("wasteType").value,
+            wasteType: document.getElementById("wasteType2").value,
             description: document.getElementById("desc").value,
             address: `${document.getElementById("address").value}, ${document.getElementById("city").value} - ${document.getElementById("pincode").value}`,
             lat: document.getElementById("lat").value,
