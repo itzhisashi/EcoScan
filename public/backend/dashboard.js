@@ -98,6 +98,153 @@ async function loadProfile(token) {
 /* ================= REPORTING LOGIC ================= */
 
 // 1. Show Image Preview when file is selected
+// document.getElementById('wasteImg').addEventListener('change', function(event) {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const reader = new FileReader();
+//         reader.onload = function(e) {
+//             const preview = document.getElementById('reportImgPreview');
+//             const placeholder = document.getElementById('reportImgPlaceholder');
+//             const containerBox = document.getElementById('imageContainerBox');
+            
+//             // Set image source and show it
+//             preview.src = e.target.result;
+//             preview.classList.remove('hidden');
+            
+//             // Hide the text/icon placeholder
+//             placeholder.classList.add('hidden');
+
+//             // Style the container so it looks clean with the new image
+//             containerBox.classList.remove('border-dashed', 'border-2', 'bg-slate-50');
+//             containerBox.classList.add('border', 'bg-black/5');
+//         }
+//         reader.readAsDataURL(file);
+//     }
+// });
+
+// function getLocation() {
+//             const btn = document.querySelector('button[onclick="getLocation()"]');
+//             const originalText = btn.innerHTML;
+            
+//             btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Locating...`;
+            
+//             if (navigator.geolocation) {
+//                 navigator.geolocation.getCurrentPosition((position) => {
+//                     document.getElementById('lat').value = position.coords.latitude.toFixed(6);
+//                     document.getElementById('lng').value = position.coords.longitude.toFixed(6);
+                    
+//                     // Success state styling
+//                     btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Location Tagged`;
+//                     btn.classList.add('bg-green-50', 'border-green-200', 'text-green-700');
+//                 }, () => {
+//                      btn.innerHTML = originalText;
+//                      alert("Could not fetch location.");
+//                 });
+//             } else {
+//                 alert("Geolocation is not supported by this browser.");
+//                 btn.innerHTML = originalText;
+//             }
+//         }
+
+// // 2. Convert Image to Base64
+// const toBase64 = file => new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result);
+//     reader.onerror = error => reject(error);
+// });
+
+// // 3. Handle Submit
+// document.getElementById("reportForm").addEventListener("submit", async (e) => {
+//     e.preventDefault();
+    
+//     const fileInput = document.getElementById("wasteImg");
+//     if(fileInput.files.length === 0) {
+//         alert("Please upload an image.");
+//         return;
+//     }
+
+//     // Show Loader
+//     const btn = document.getElementById("submitBtn");
+    
+//     const loader = document.getElementById("loader");
+//     btn.style.display = "none";
+//     loader.style.display = "flex";
+//     btn.disabled = true;
+//     btn.classList.add('opacity-75', 'cursor-not-allowed', 'grayscale');
+
+//     try {
+//         const imageBase64 = await toBase64(fileInput.files[0]);
+//         const token = localStorage.getItem("token");
+
+//         const payload = {
+//             action: "report_waste",
+//             token: token,
+//             wasteType: document.getElementById("wasteType").value,
+//             description: document.getElementById("desc").value,
+//             address: `${document.getElementById("address").value}, ${document.getElementById("city").value} - ${document.getElementById("pincode").value}`,
+//             lat: document.getElementById("lat").value,
+//             lng: document.getElementById("lng").value,
+//             image: imageBase64,
+//             mimeType: fileInput.files[0].type
+//         };
+
+//         const res = await fetch(API_URL, {
+//             method: "POST",
+//             body: JSON.stringify(payload)
+//         });
+//         const data = await res.json();
+
+//         // if (data.status === "success") {
+//         //     alert(`Report Submitted! Points will be awarded once verified.`);
+//         //     location.reload(); // Refresh to show new points
+//         // } else {
+//         //     alert("Error: " + data.message);
+//         // }
+
+//         if (data.status === "success") {
+//             alert(`Report Submitted! Points will be awarded once verified.`);
+            
+//             // 1. Reset the text inputs and dropdowns
+//             document.getElementById("reportForm").reset();
+            
+//             // 2. Reset the Image Preview UI
+//             const preview = document.getElementById('reportImgPreview');
+//             const placeholder = document.getElementById('reportImgPlaceholder');
+//             const containerBox = document.getElementById('imageContainerBox');
+            
+//             if(preview) {
+//                 preview.src = "";
+//                 preview.classList.add('hidden');
+//             }
+//             if(placeholder) placeholder.classList.remove('hidden');
+//             if(containerBox) {
+//                 containerBox.classList.add('border-dashed', 'border-2', 'bg-slate-50');
+//                 containerBox.classList.remove('border', 'bg-black/5');
+//             }
+
+//             // 3. SILENTLY UPDATE DATA (No page reload)
+//             loadProfile(token); 
+            
+//             // Optional: Switch to profile tab to see history
+//             // switchTab('profile'); 
+            
+//         } else {
+//             alert("Error: " + data.message);
+//         }
+
+//     } catch (err) {
+//         console.error(err);
+//         alert("Failed to submit report.");
+//     } finally {
+//         btn.style.display = "block";
+//         loader.style.display = "none";
+//     }
+// });
+
+/* ================= REPORTING LOGIC ================= */
+
+// 1. Show Image Preview when file is selected
 document.getElementById('wasteImg').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -123,28 +270,28 @@ document.getElementById('wasteImg').addEventListener('change', function(event) {
 });
 
 function getLocation() {
-            const btn = document.querySelector('button[onclick="getLocation()"]');
-            const originalText = btn.innerHTML;
+    const btn = document.querySelector('button[onclick="getLocation()"]');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Locating...`;
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            document.getElementById('lat').value = position.coords.latitude.toFixed(6);
+            document.getElementById('lng').value = position.coords.longitude.toFixed(6);
             
-            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Locating...`;
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    document.getElementById('lat').value = position.coords.latitude.toFixed(6);
-                    document.getElementById('lng').value = position.coords.longitude.toFixed(6);
-                    
-                    // Success state styling
-                    btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Location Tagged`;
-                    btn.classList.add('bg-green-50', 'border-green-200', 'text-green-700');
-                }, () => {
-                     btn.innerHTML = originalText;
-                     alert("Could not fetch location.");
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-                btn.innerHTML = originalText;
-            }
-        }
+            // Success state styling
+            btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Location Tagged`;
+            btn.classList.add('bg-green-50', 'border-green-200', 'text-green-700');
+        }, () => {
+             btn.innerHTML = originalText;
+             alert("Could not fetch location. Please check your browser permissions.");
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+        btn.innerHTML = originalText;
+    }
+}
 
 // 2. Convert Image to Base64
 const toBase64 = file => new Promise((resolve, reject) => {
@@ -164,12 +311,12 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
         return;
     }
 
-    // Show Loader
+    // Show Loader & Disable Button
     const btn = document.getElementById("submitBtn");
-    
     const loader = document.getElementById("loader");
+    
     btn.style.display = "none";
-    loader.style.display = "flex";
+    loader.classList.remove("hidden"); // Use Tailwind class instead of inline display
     btn.disabled = true;
     btn.classList.add('opacity-75', 'cursor-not-allowed', 'grayscale');
 
@@ -195,13 +342,6 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
         });
         const data = await res.json();
 
-        // if (data.status === "success") {
-        //     alert(`Report Submitted! Points will be awarded once verified.`);
-        //     location.reload(); // Refresh to show new points
-        // } else {
-        //     alert("Error: " + data.message);
-        // }
-
         if (data.status === "success") {
             alert(`Report Submitted! Points will be awarded once verified.`);
             
@@ -223,11 +363,15 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
                 containerBox.classList.remove('border', 'bg-black/5');
             }
 
-            // 3. SILENTLY UPDATE DATA (No page reload)
+            // 3. Reset the Location Button UI
+            const locBtn = document.querySelector('button[onclick="getLocation()"]');
+            if (locBtn) {
+                locBtn.innerHTML = `<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Detect My Coordinates`;
+                locBtn.classList.remove('bg-green-50', 'border-green-200', 'text-green-700');
+            }
+
+            // 4. SILENTLY UPDATE DATA
             loadProfile(token); 
-            
-            // Optional: Switch to profile tab to see history
-            // switchTab('profile'); 
             
         } else {
             alert("Error: " + data.message);
@@ -235,12 +379,19 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
 
     } catch (err) {
         console.error(err);
-        alert("Failed to submit report.");
+        alert("Failed to submit report. Please check your connection.");
     } finally {
+        // Fix: Properly re-enable the button and hide loader
         btn.style.display = "block";
-        loader.style.display = "none";
+        loader.classList.add("hidden");
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed', 'grayscale');
     }
 });
+
+
+
+
 
 /* ================= UTILS ================= */
 
