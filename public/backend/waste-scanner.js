@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiZEriu06P5OxWu-_VstAm1d1xqo4_gBPnkWvvkCIdCHIrWvwgXDCZm5NLf7XFbPwT/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoH_zYSuGnW1Gu-2oUTfUTZ-n-epaZ2j0VYDV0NntVQ1nrfpw0_8vh6O_AhdYuhORpkA/exec';
 let base64String = "";
 
 lucide.createIcons();
